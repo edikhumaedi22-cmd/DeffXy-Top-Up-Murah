@@ -3,14 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DEFFXY TOP UP - Database Online</title>
+    <title>DEFFXY TOP UP - Portal Game</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-
     <style>
         :root {
             --bg: #0c0f16;
@@ -25,50 +20,95 @@
             --success: #00d4aa;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
             font-family: 'Inter', sans-serif;
             background: var(--bg);
             color: var(--fg);
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        .font-display { font-family: 'Rajdhani', sans-serif; }
+        .font-display {
+            font-family: 'Rajdhani', sans-serif;
+        }
 
-        /* Simple Background */
+        /* Animated Background */
         .bg-mesh {
             position: fixed;
             inset: 0;
-            background: radial-gradient(circle at 10% 20%, rgba(0, 212, 170, 0.05) 0%, transparent 90%),
-                        radial-gradient(circle at 90% 80%, rgba(0, 153, 255, 0.05) 0%, transparent 90%);
+            background: 
+                radial-gradient(ellipse at 0% 0%, rgba(0, 212, 170, 0.07) 0%, transparent 50%),
+                radial-gradient(ellipse at 100% 100%, rgba(0, 153, 255, 0.05) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(0, 212, 170, 0.02) 0%, transparent 70%);
+            z-index: -2;
+        }
+
+        .grid-pattern {
+            position: fixed;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(0, 212, 170, 0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 212, 170, 0.015) 1px, transparent 1px);
+            background-size: 50px 50px;
             z-index: -1;
+        }
+
+        /* Scanline Effect */
+        .scanlines::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0, 0, 0, 0.03) 2px,
+                rgba(0, 0, 0, 0.03) 4px
+            );
+            pointer-events: none;
+            z-index: 100;
         }
 
         /* Card */
         .card {
-            background: var(--bg-card);
+            background: linear-gradient(145deg, var(--bg-card), rgba(20, 25, 36, 0.9));
             border: 1px solid var(--border);
             border-radius: 16px;
-            padding: 24px;
-            margin-bottom: 16px;
+            backdrop-filter: blur(20px);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card:hover {
+            border-color: rgba(0, 212, 170, 0.3);
+            box-shadow: 0 0 40px rgba(0, 212, 170, 0.1);
         }
 
         /* Input */
         .input-field {
-            background: var(--bg);
+            background: rgba(12, 15, 22, 0.9);
             border: 1px solid var(--border);
             color: var(--fg);
             padding: 14px 18px;
             border-radius: 12px;
             width: 100%;
             font-size: 15px;
-            margin-bottom: 12px;
+            transition: all 0.3s ease;
         }
 
         .input-field:focus {
             outline: none;
             border-color: var(--accent);
+            box-shadow: 0 0 25px rgba(0, 212, 170, 0.15);
+        }
+
+        .input-field::placeholder {
+            color: var(--muted);
         }
 
         /* Buttons */
@@ -78,27 +118,38 @@
             font-weight: 700;
             font-family: 'Rajdhani', sans-serif;
             font-size: 16px;
+            letter-spacing: 0.5px;
             padding: 14px 28px;
             border-radius: 12px;
             border: none;
             cursor: pointer;
-            width: 100%;
-            transition: transform 0.2s;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
 
-        .btn-primary:hover { transform: translateY(-2px); }
-        
-        .btn-danger {
-            background: linear-gradient(135deg, var(--danger), #ee5a24);
-            color: white;
-            font-weight: 700;
-            font-family: 'Rajdhani', sans-serif;
-            padding: 12px 24px;
-            border-radius: 10px;
-            border: none;
-            cursor: pointer;
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
             width: 100%;
-            margin-top: 10px;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 212, 170, 0.3);
+        }
+
+        .btn-primary:active {
+            transform: translateY(-1px);
         }
 
         .btn-secondary {
@@ -108,8 +159,1844 @@
             padding: 14px 28px;
             border-radius: 12px;
             cursor: pointer;
-            width: 100%;
             font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent);
+            background: rgba(0, 212, 170, 0.1);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger), #ee5a24);
+            color: white;
+            font-weight: 700;
+            font-family: 'Rajdhani', sans-serif;
+            padding: 12px 24px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 71, 87, 0.3);
+        }
+
+        /* Product Card */
+        .product-card {
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-secondary));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .product-card:hover::before {
+            opacity: 1;
+        }
+
+        .product-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+        }
+
+        .product-card.selected {
+            border-color: var(--accent);
+            background: rgba(0, 212, 170, 0.05);
+        }
+
+        .product-card.selected::before {
+            opacity: 1;
+        }
+
+        /* Navigation */
+        .nav-item {
+            padding: 14px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            position: relative;
+        }
+
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 3px;
+            height: 0;
+            background: var(--accent);
+            border-radius: 0 3px 3px 0;
+            transition: height 0.3s ease;
+        }
+
+        .nav-item:hover {
+            background: rgba(0, 212, 170, 0.08);
+        }
+
+        .nav-item:hover::before {
+            height: 60%;
+        }
+
+        .nav-item.active {
+            background: rgba(0, 212, 170, 0.12);
+        }
+
+        .nav-item.active::before {
+            height: 80%;
+        }
+
+        /* Transaction Item */
+        .transaction-item {
+            background: rgba(20, 25, 36, 0.6);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 18px;
+            margin-bottom: 14px;
+            transition: all 0.3s ease;
+            animation: slideIn 0.4s ease;
+        }
+
+        .transaction-item:hover {
+            border-color: rgba(0, 212, 170, 0.3);
+            background: rgba(20, 25, 36, 0.8);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Badge */
+        .badge {
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-success {
+            background: rgba(0, 212, 170, 0.15);
+            color: var(--accent);
+            border: 1px solid rgba(0, 212, 170, 0.3);
+        }
+
+        .badge-pending {
+            background: rgba(255, 165, 2, 0.15);
+            color: var(--warning);
+            border: 1px solid rgba(255, 165, 2, 0.3);
+        }
+
+        .badge-failed {
+            background: rgba(255, 71, 87, 0.15);
+            color: var(--danger);
+            border: 1px solid rgba(255, 71, 87, 0.3);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 36px;
+            max-width: 480px;
+            width: 92%;
+            transform: scale(0.9) translateY(20px);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1) translateY(0);
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--bg-card);
+            border: 1px solid var(--accent);
+            border-radius: 14px;
+            padding: 18px 28px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            z-index: 300;
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 40px rgba(0, 212, 170, 0.2);
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        /* Page Transitions */
+        .page {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Stagger Animation */
+        .stagger {
+            opacity: 0;
+            animation: staggerUp 0.5s ease forwards;
+        }
+
+        @keyframes staggerUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Glow Effect */
+        .glow-text {
+            text-shadow: 0 0 30px rgba(0, 212, 170, 0.5);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent);
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            width: 24px;
+            height: 24px;
+            border: 3px solid transparent;
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Login Container */
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-box {
+            width: 100%;
+            max-width: 420px;
+        }
+
+        /* User ID Display */
+        .user-id-badge {
+            background: linear-gradient(135deg, rgba(0, 212, 170, 0.15), rgba(0, 153, 255, 0.1));
+            border: 1px solid rgba(0, 212, 170, 0.3);
+            border-radius: 10px;
+            padding: 8px 16px;
+            font-family: 'Rajdhani', monospace;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        /* Diamond Icon */
+        .diamond-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #00d4ff, #0099ff);
+            clip-path: polygon(50% 0%, 100% 35%, 100% 70%, 50% 100%, 0% 70%, 0% 35%);
+        }
+
+        /* Mobile Menu */
+        .mobile-header {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: 0;
+                top: 0;
+                height: 100vh;
+                z-index: 100;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .mobile-header {
+                display: flex;
+            }
+
+            .sidebar-overlay {
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.6);
+                z-index: 90;
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.3s ease;
+            }
+
+            .sidebar-overlay.active {
+                opacity: 1;
+                visibility: visible;
+            }
+        }
+
+        /* Reduced Motion */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* Stats Card */
+        .stat-card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(0, 212, 170, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        /* APK ID Badge */
+        .apk-id-badge {
+            background: linear-gradient(135deg, rgba(255, 165, 2, 0.15), rgba(255, 71, 87, 0.1));
+            border: 1px solid rgba(255, 165, 2, 0.3);
+            border-radius: 10px;
+            padding: 8px 16px;
+            font-family: 'Rajdhani', monospace;
+            font-weight: 600;
+            letter-spacing: 1px;
+            color: #ffa502;
+        }
+
+        /* Tab Navigation */
+        .tab-btn {
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .tab-btn:hover {
+            background: rgba(0, 212, 170, 0.1);
+        }
+
+        .tab-btn.active {
+            background: rgba(0, 212, 170, 0.15);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* Copy Button */
+        .copy-btn {
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(0, 212, 170, 0.1);
+            border: 1px solid rgba(0, 212, 170, 0.3);
+            color: var(--accent);
+        }
+
+        .copy-btn:hover {
+            background: rgba(0, 212, 170, 0.2);
+        }
+    </style>
+</head>
+<body class="scanlines">
+    <!-- Background -->
+    <div class="bg-mesh"></div>
+    <div class="grid-pattern"></div>
+
+    <!-- Sidebar Overlay (Mobile) -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <!-- Login/Register Page -->
+    <div id="authPage" class="login-container">
+        <div class="login-box">
+            <!-- Logo -->
+            <div class="text-center mb-10">
+                <h1 class="font-display text-5xl font-bold bg-gradient-to-r from-cyan-400 via-emerald-400 to-teal-400 bg-clip-text text-transparent glow-text">
+                    DEFFXY
+                </h1>
+                <p class="text-sm text-gray-500 mt-2 tracking-widest">TOP UP CENTER</p>
+            </div>
+
+            <!-- Login Form -->
+            <div id="loginForm" class="card p-8">
+                <h2 class="font-display text-2xl font-bold mb-2">Masuk ke Akun</h2>
+                <p class="text-gray-500 text-sm mb-6">Gunakan ID APK atau Username untuk login</p>
+
+                <div class="space-y-5">
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2">ID APK / Username</label>
+                        <input type="text" id="loginUsername" class="input-field" placeholder="Masukkan ID APK atau Username">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2">Password</label>
+                        <input type="password" id="loginPassword" class="input-field" placeholder="Masukkan password">
+                    </div>
+                    <button class="btn-primary w-full" onclick="handleLogin()">Masuk</button>
+                </div>
+
+                <div class="mt-6 text-center">
+                    <p class="text-gray-500 text-sm">Belum punya akun? 
+                        <span class="text-cyan-400 cursor-pointer hover:underline" onclick="showRegister()">Daftar disini</span>
+                    </p>
+                </div>
+
+                <!-- Developer Login -->
+                <div class="mt-4 pt-4 border-t border-gray-800 text-center">
+                    <p class="text-gray-600 text-xs">Developer? 
+                        <span class="text-emerald-400 cursor-pointer hover:underline" onclick="showDevLogin()">Login Developer</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Register Form -->
+            <div id="registerForm" class="card p-8 hidden">
+                <h2 class="font-display text-2xl font-bold mb-2">Buat Akun Baru</h2>
+                <p class="text-gray-500 text-sm mb-6">Daftar untuk mulai top up game</p>
+
+                <div class="space-y-5">
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2">ID APK <span class="text-amber-400">(Penting)</span></label>
+                        <input type="text" id="regApkId" class="input-field" placeholder="Buat ID APK unik (contoh: DEXY123)">
+                        <p class="text-xs text-gray-600 mt-1">ID APK digunakan untuk login dan top up saldo</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2">Username</label>
+                        <input type="text" id="regUsername" class="input-field" placeholder="Buat username">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2">Password</label>
+                        <input type="password" id="regPassword" class="input-field" placeholder="Buat password">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2">Konfirmasi Password</label>
+                        <input type="password" id="regConfirmPassword" class="input-field" placeholder="Ulangi password">
+                    </div>
+                    <button class="btn-primary w-full" onclick="handleRegister()">Daftar</button>
+                </div>
+
+                <div class="mt-6 text-center">
+                    <p class="text-gray-500 text-sm">Sudah punya akun? 
+                        <span class="text-cyan-400 cursor-pointer hover:underline" onclick="showLogin()">Masuk disini</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Developer Login Form -->
+            <div id="devLoginForm" class="card p-8 hidden">
+                <h2 class="font-display text-2xl font-bold mb-2">Login Developer</h2>
+                <p class="text-gray-500 text-sm mb-6">Akses panel developer</p>
+
+                <div class="space-y-5">
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2">Developer Key</label>
+                        <input type="password" id="devKey" class="input-field" placeholder="Masukkan developer key">
+                    </div>
+                    <button class="btn-primary w-full" onclick="handleDevLogin()">Masuk sebagai Developer</button>
+                </div>
+
+                <div class="mt-6 text-center">
+                    <p class="text-gray-500 text-sm">
+                        <span class="text-gray-400 cursor-pointer hover:underline" onclick="showLogin()">Kembali ke login user</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="mainApp" class="hidden">
+        <!-- Sidebar -->
+        <aside class="sidebar w-72 bg-opacity-95 backdrop-blur-xl border-r border-gray-800 p-6 flex flex-col" id="sidebar" style="background: rgba(12, 15, 22, 0.95);">
+            <!-- Logo -->
+            <div class="mb-10">
+                <h1 class="font-display text-3xl font-bold bg-gradient-to-r from-cyan-400 to-emerald-400 bg-clip-text text-transparent">
+                    DEFFXY
+                </h1>
+                <p class="text-xs text-gray-600 mt-1 tracking-widest">TOP UP CENTER</p>
+            </div>
+
+            <!-- Navigation -->
+            <nav class="flex-1 space-y-2" id="navMenu">
+                <div class="nav-item active" data-page="dashboard" onclick="switchPage('dashboard')">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                    </svg>
+                    <span>Dashboard</span>
+                </div>
+                <div class="nav-item" data-page="topup" onclick="switchPage('topup')">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span>Top Up</span>
+                </div>
+                <div class="nav-item" data-page="history" onclick="switchPage('history')">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                    </svg>
+                    <span>Riwayat Transaksi</span>
+                </div>
+                <div class="nav-item hidden" data-page="developer" id="devNav" onclick="switchPage('developer')">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                    <span>Developer Panel</span>
+                </div>
+            </nav>
+
+            <!-- User Info -->
+            <div class="mt-auto pt-6 border-t border-gray-800">
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500 to-emerald-500 flex items-center justify-center font-bold text-lg text-gray-900" id="userAvatar">
+                        U
+                    </div>
+                    <div class="flex-1">
+                        <p class="font-semibold" id="userName">User</p>
+                        <p class="text-xs text-gray-500">ID: <span id="displayUserId" class="text-cyan-400">-</span></p>
+                    </div>
+                </div>
+                <button class="btn-secondary w-full text-sm" onclick="handleLogout()">Keluar</button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-6 md:p-8 overflow-y-auto min-h-screen">
+            <!-- Mobile Header -->
+            <div class="mobile-header items-center justify-between mb-6 md:hidden">
+                <button class="p-3 bg-gray-800 rounded-xl" onclick="toggleSidebar()">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+                <h1 class="font-display text-xl font-bold text-cyan-400">DEFFXY</h1>
+                <div class="w-12"></div>
+            </div>
+
+            <!-- Dashboard Page -->
+            <div id="page-dashboard" class="page active">
+                <div class="mb-8">
+                    <h2 class="font-display text-4xl font-bold mb-2">Dashboard</h2>
+                    <p class="text-gray-500">Selamat datang kembali, <span id="welcomeName">User</span></p>
+                </div>
+
+                <!-- Stats -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="card stat-card p-6 stagger" style="animation-delay: 0.1s; transform: translateY(20px);">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-gray-400 text-sm">Saldo Anda</span>
+                            <div class="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center">
+                                <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <p class="font-display text-4xl font-bold text-emerald-400" id="balanceDisplay">Rp 0</p>
+                        <p class="text-xs text-gray-500 mt-2">Saldo tersedia untuk top up</p>
+                    </div>
+
+                    <div class="card stat-card p-6 stagger" style="animation-delay: 0.2s; transform: translateY(20px);">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-gray-400 text-sm">ID APK</span>
+                            <div class="w-10 h-10 rounded-xl bg-amber-500/20 flex items-center justify-center">
+                                <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <p class="apk-id-badge" id="apkIdDisplay">-</p>
+                            <button class="copy-btn" onclick="copyApkId()">Salin</button>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-2">Gunakan untuk login & top up</p>
+                    </div>
+
+                    <div class="card stat-card p-6 stagger" style="animation-delay: 0.3s; transform: translateY(20px);">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-gray-400 text-sm">Total Transaksi</span>
+                            <div class="w-10 h-10 rounded-xl bg-cyan-500/20 flex items-center justify-center">
+                                <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <p class="font-display text-4xl font-bold" id="totalTransactions">0</p>
+                        <p class="text-xs text-gray-500 mt-2">Transaksi berhasil</p>
+                    </div>
+
+                    <div class="card stat-card p-6 stagger" style="animation-delay: 0.4s; transform: translateY(20px);">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-gray-400 text-sm">User ID</span>
+                            <div class="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center">
+                                <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <p class="user-id-badge inline-block" id="userIdBadge">-</p>
+                        <p class="text-xs text-gray-500 mt-2">ID sistem internal</p>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="card p-6 stagger" style="animation-delay: 0.5s; transform: translateY(20px);">
+                    <h3 class="font-display text-xl font-bold mb-4">Aksi Cepat</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <button class="p-4 bg-gray-800/50 rounded-xl border border-gray-700 hover:border-emerald-500/50 transition-all hover:bg-emerald-500/10" onclick="switchPage('topup')">
+                            <svg class="w-8 h-8 mx-auto mb-2 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                            </svg>
+                            <span class="text-sm">Top Up Diamond</span>
+                        </button>
+                        <button class="p-4 bg-gray-800/50 rounded-xl border border-gray-700 hover:border-cyan-500/50 transition-all hover:bg-cyan-500/10" onclick="switchPage('history')">
+                            <svg class="w-8 h-8 mx-auto mb-2 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <span class="text-sm">Riwayat</span>
+                        </button>
+                        <button class="p-4 bg-gray-800/50 rounded-xl border border-gray-700 hover:border-amber-500/50 transition-all hover:bg-amber-500/10" onclick="copyApkId()">
+                            <svg class="w-8 h-8 mx-auto mb-2 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/>
+                            </svg>
+                            <span class="text-sm">Salin ID APK</span>
+                        </button>
+                        <button class="p-4 bg-gray-800/50 rounded-xl border border-gray-700 hover:border-purple-500/50 transition-all hover:bg-purple-500/10" onclick="showHelp()">
+                            <svg class="w-8 h-8 mx-auto mb-2 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <span class="text-sm">Bantuan</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Info Card -->
+                <div class="card p-6 mt-6 stagger" style="animation-delay: 0.6s; transform: translateY(20px);">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-amber-500/20 flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h4 class="font-display text-lg font-bold text-amber-400">Cara Top Up Saldo</h4>
+                            <p class="text-gray-400 text-sm mt-1">Kirim ID APK Anda ke Developer untuk pengisian saldo. Setelah saldo masuk, Anda bisa langsung membeli diamond di menu Top Up.</p>
+                            <div class="mt-3 p-3 bg-gray-800/50 rounded-lg">
+                                <p class="text-xs text-gray-500">ID APK Anda:</p>
+                                <p class="text-amber-400 font-bold font-mono" id="apkIdInfo">-</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Up Page -->
+            <div id="page-topup" class="page">
+                <div class="mb-8">
+                    <h2 class="font-display text-4xl font-bold mb-2">Top Up Diamond</h2>
+                    <p class="text-gray-500">Pilih game dan nominal diamond yang ingin dibeli</p>
+                </div>
+
+                <!-- Game Selection -->
+                <div class="mb-8">
+                    <h3 class="font-display text-lg font-bold mb-4">Pilih Game</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="gameList">
+                        <!-- Games will be rendered here -->
+                    </div>
+                </div>
+
+                <!-- Product Selection -->
+                <div class="mb-8" id="productSection" style="display: none;">
+                    <h3 class="font-display text-lg font-bold mb-4">Pilih Nominal</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" id="productList">
+                        <!-- Products will be rendered here -->
+                    </div>
+                </div>
+
+                <!-- Purchase Form -->
+                <div class="card p-6" id="purchaseForm" style="display: none;">
+                    <h3 class="font-display text-xl font-bold mb-4">Detail Pembelian</h3>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center p-4 bg-gray-800/50 rounded-xl">
+                            <span class="text-gray-400">Produk</span>
+                            <span class="font-bold" id="selectedProduct">-</span>
+                        </div>
+                        <div class="flex justify-between items-center p-4 bg-gray-800/50 rounded-xl">
+                            <span class="text-gray-400">Harga</span>
+                            <span class="font-bold text-emerald-400" id="selectedPrice">-</span>
+                        </div>
+                        <div class="flex justify-between items-center p-4 bg-gray-800/50 rounded-xl">
+                            <span class="text-gray-400">Saldo Anda</span>
+                            <span class="font-bold" id="currentBalanceDisplay">-</span>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm text-gray-400 mb-2">User ID Game</label>
+                            <input type="text" id="gameUserId" class="input-field" placeholder="Masukkan User ID game Anda">
+                        </div>
+
+                        <button class="btn-primary w-full" id="purchaseBtn" onclick="processPurchase()">
+                            Beli Sekarang
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- History Page -->
+            <div id="page-history" class="page">
+                <div class="mb-8">
+                    <h2 class="font-display text-4xl font-bold mb-2">Riwayat Transaksi</h2>
+                    <p class="text-gray-500">Daftar semua transaksi yang pernah Anda lakukan</p>
+                </div>
+
+                <div id="transactionList">
+                    <!-- Transactions will be rendered here -->
+                </div>
+            </div>
+
+            <!-- Developer Page -->
+            <div id="page-developer" class="page">
+                <div class="mb-8">
+                    <h2 class="font-display text-4xl font-bold mb-2">Developer Panel</h2>
+                    <p class="text-gray-500">Kelola saldo pengguna dan lihat statistik</p>
+                </div>
+
+                <!-- Stats -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="card p-6">
+                        <span class="text-gray-400 text-sm">Total Pengguna</span>
+                        <p class="font-display text-3xl font-bold mt-2" id="totalUsers">0</p>
+                    </div>
+                    <div class="card p-6">
+                        <span class="text-gray-400 text-sm">Total Transaksi</span>
+                        <p class="font-display text-3xl font-bold mt-2" id="devTotalTransactions">0</p>
+                    </div>
+                    <div class="card p-6">
+                        <span class="text-gray-400 text-sm">Total Revenue</span>
+                        <p class="font-display text-3xl font-bold mt-2 text-emerald-400" id="totalRevenue">Rp 0</p>
+                    </div>
+                </div>
+
+                <!-- Top Up Saldo Form -->
+                <div class="card p-6 mb-8">
+                    <h3 class="font-display text-xl font-bold mb-4">Isi Saldo Pengguna</h3>
+                    <p class="text-gray-500 text-sm mb-6">Masukkan ID APK pengguna dan nominal saldo yang akan ditambahkan</p>
+
+                    <div class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm text-gray-400 mb-2">ID APK Target</label>
+                                <input type="text" id="targetUserId" class="input-field" placeholder="Masukkan ID APK pengguna">
+                                <p class="text-xs text-gray-600 mt-1">Cari berdasarkan ID APK yang terdaftar</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm text-gray-400 mb-2">Nominal Saldo</label>
+                                <input type="number" id="topUpAmount" class="input-field" placeholder="Masukkan nominal">
+                            </div>
+                        </div>
+
+                        <!-- Quick Amount Buttons -->
+                        <div class="flex flex-wrap gap-2">
+                            <button class="px-4 py-2 bg-gray-800 rounded-lg text-sm hover:bg-emerald-500/20 hover:text-emerald-400 transition-all" onclick="setAmount(10000)">Rp 10.000</button>
+                            <button class="px-4 py-2 bg-gray-800 rounded-lg text-sm hover:bg-emerald-500/20 hover:text-emerald-400 transition-all" onclick="setAmount(25000)">Rp 25.000</button>
+                            <button class="px-4 py-2 bg-gray-800 rounded-lg text-sm hover:bg-emerald-500/20 hover:text-emerald-400 transition-all" onclick="setAmount(50000)">Rp 50.000</button>
+                            <button class="px-4 py-2 bg-gray-800 rounded-lg text-sm hover:bg-emerald-500/20 hover:text-emerald-400 transition-all" onclick="setAmount(100000)">Rp 100.000</button>
+                        </div>
+
+                        <!-- Search Result -->
+                        <div id="searchResult" class="hidden p-4 bg-gray-800/50 rounded-xl">
+                            <p class="text-sm text-gray-400">User ditemukan:</p>
+                            <p class="font-bold text-lg" id="foundUserName">-</p>
+                            <p class="text-xs text-gray-500">Saldo saat ini: <span id="foundUserBalance">-</span></p>
+                        </div>
+
+                        <div class="flex gap-4">
+                            <button class="btn-primary flex-1" onclick="topUpSaldo()">
+                                Tambah Saldo
+                            </button>
+                            <button class="btn-danger" onclick="reduceSaldo()">
+                                Kurangi Saldo
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- User List -->
+                <div class="card p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-display text-xl font-bold">Daftar Pengguna</h3>
+                        <div class="flex gap-2">
+                            <input type="text" id="searchUserInput" class="input-field py-2 px-3 text-sm" style="width: 200px;" placeholder="Cari ID APK..." oninput="searchUserList()">
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="border-b border-gray-800">
+                                    <th class="text-left py-3 px-4 text-gray-400 font-medium">ID APK</th>
+                                    <th class="text-left py-3 px-4 text-gray-400 font-medium">Username</th>
+                                    <th class="text-right py-3 px-4 text-gray-400 font-medium">Saldo</th>
+                                    <th class="text-right py-3 px-4 text-gray-400 font-medium">Transaksi</th>
+                                    <th class="text-center py-3 px-4 text-gray-400 font-medium">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="userListTable">
+                                <!-- Users will be rendered here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="modal">
+        <div class="modal-content">
+            <div id="modalContent">
+                <!-- Modal content will be rendered here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+        </svg>
+        <span id="toastMessage">Success!</span>
+    </div>
+
+    <script>
+        // ==================== DATA ====================
+        const DEV_KEY = 'zenith2024';
+        
+        // --- PENTING: ISI DENGAN DATA TELEGRAM KAMU ---
+        const BOT_TOKEN = '7334976291:AAEOf0ppLNPYjOF98NC7ceZtMfXPWZ1X-WE'; 
+        const CHAT_ID = '7223902938';     
+        // ---------------------------------------------
+        const games = [
+            { id: 'ml', name: 'Mobile Legends', image: 'ML', color: 'from-blue-500 to-blue-700' },
+            { id: 'ff', name: 'Free Fire', image: 'FF', color: 'from-orange-500 to-red-600' },
+            { id: 'pubg', name: 'PUBG Mobile', image: 'PUBG', color: 'from-yellow-500 to-orange-500' },
+            { id: 'gi', name: 'Genshin Impact', image: 'GI', color: 'from-purple-500 to-pink-500' }
+        ];
+
+        const products = {
+            ml: [
+                { id: 'ml1', name: '86 Diamond', price: 19000, diamond: 86 },
+                { id: 'ml2', name: '172 Diamond', price: 38000, diamond: 172 },
+                { id: 'ml3', name: '257 Diamond', price: 57000, diamond: 257 },
+                { id: 'ml4', name: '344 Diamond', price: 76000, diamond: 344 },
+                { id: 'ml5', name: '429 Diamond', price: 95000, diamond: 429 },
+                { id: 'ml6', name: '514 Diamond', price: 114000, diamond: 514 },
+                { id: 'ml7', name: '706 Diamond', price: 152000, diamond: 706 },
+                { id: 'ml8', name: '878 Diamond', price: 190000, diamond: 878 }
+            ],
+            ff: [
+                { id: 'ff1', name: '70 Diamond', price: 10000, diamond: 70 },
+                { id: 'ff2', name: '140 Diamond', price: 20000, diamond: 140 },
+                { id: 'ff3', name: '355 Diamond', price: 50000, diamond: 355 },
+                { id: 'ff4', name: '720 Diamond', price: 100000, diamond: 720 },
+                { id: 'ff5', name: '1450 Diamond', price: 200000, diamond: 1450 }
+            ],
+            pubg: [
+                { id: 'pubg1', name: '60 UC', price: 15000, diamond: 60 },
+                { id: 'pubg2', name: '325 UC', price: 75000, diamond: 325 },
+                { id: 'pubg3', name: '660 UC', price: 150000, diamond: 660 },
+                { id: 'pubg4', name: '1800 UC', price: 400000, diamond: 1800 }
+            ],
+            gi: [
+                { id: 'gi1', name: '60 Genesis', price: 16000, diamond: 60 },
+                { id: 'gi2', name: '330 Genesis', price: 79000, diamond: 330 },
+                { id: 'gi3', name: '1090 Genesis', price: 249000, diamond: 1090 },
+                { id: 'gi4', name: '2240 Genesis', price: 479000, diamond: 2240 }
+            ]
+        };
+
+        // ==================== STATE ====================
+        let currentUser = null;
+        let isDeveloper = false;
+        let selectedGame = null;
+        let selectedProductData = null;
+
+        // ==================== INITIALIZATION ====================
+        function init() {
+            loadFromStorage();
+            renderGames();
+            
+            // Add event listener for ID APK search
+            document.getElementById('targetUserId').addEventListener('input', searchUserByApkId);
+            
+            // Check if user is logged in
+            const savedUser = localStorage.getItem('currentUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                isDeveloper = localStorage.getItem('isDeveloper') === 'true';
+                showMainApp();
+            }
+        }
+
+        function loadFromStorage() {
+            if (!localStorage.getItem('users')) {
+                localStorage.setItem('users', JSON.stringify([]));
+            }
+            if (!localStorage.getItem('transactions')) {
+                localStorage.setItem('transactions', JSON.stringify([]));
+            }
+        }
+
+        // ==================== AUTH FUNCTIONS ====================
+        function showLogin() {
+            document.getElementById('loginForm').classList.remove('hidden');
+            document.getElementById('registerForm').classList.add('hidden');
+            document.getElementById('devLoginForm').classList.add('hidden');
+        }
+
+        function showRegister() {
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('registerForm').classList.remove('hidden');
+            document.getElementById('devLoginForm').classList.add('hidden');
+        }
+
+        function showDevLogin() {
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('registerForm').classList.add('hidden');
+            document.getElementById('devLoginForm').classList.remove('hidden');
+        }
+
+        function handleRegister() {
+            const apkId = document.getElementById('regApkId').value.trim().toUpperCase();
+            const username = document.getElementById('regUsername').value.trim();
+            const password = document.getElementById('regPassword').value;
+            const confirmPassword = document.getElementById('regConfirmPassword').value;
+
+            // Validation
+            if (!apkId || !username || !password) {
+                showToast('Semua field harus diisi!', 'error');
+                return;
+            }
+
+            if (apkId.length < 4) {
+                showToast('ID APK minimal 4 karakter!', 'error');
+                return;
+            }
+
+            if (username.length < 3) {
+                showToast('Username minimal 3 karakter!', 'error');
+                return;
+            }
+
+            if (password.length < 4) {
+                showToast('Password minimal 4 karakter!', 'error');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showToast('Password tidak cocok!', 'error');
+                return;
+            }
+
+            const users = JSON.parse(localStorage.getItem('users'));
+
+            // Check if APK ID exists
+            if (users.find(u => u.apkId.toUpperCase() === apkId)) {
+                showToast('ID APK sudah digunakan!', 'error');
+                return;
+            }
+
+            // Check if username exists
+            if (users.find(u => u.username.toLowerCase() === username.toLowerCase())) {
+                showToast('Username sudah digunakan!', 'error');
+                return;
+            }
+
+            // Create new user
+            const newUser = {
+                id: generateUserId(),
+                apkId: apkId,
+                username: username,
+                password: password,
+                balance: 0,
+                createdAt: new Date().toISOString()
+            };
+
+            users.push(newUser);
+            localStorage.setItem('users', JSON.stringify(users));
+
+            // Send Telegram notification for new user
+            sendNewUserNotification(newUser);
+
+            showToast('Registrasi berhasil! Silakan login.', 'success');
+            showLogin();
+            document.getElementById('regApkId').value = '';
+            document.getElementById('regUsername').value = '';
+            document.getElementById('regPassword').value = '';
+            document.getElementById('regConfirmPassword').value = '';
+        }
+
+        function handleLogin() {
+            const identity = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value;
+
+            if (!identity || !password) {
+                showToast('ID APK/Username dan password harus diisi!', 'error');
+                return;
+            }
+
+            const users = JSON.parse(localStorage.getItem('users'));
+            // Login with either APK ID or Username
+            const user = users.find(u => 
+                (u.apkId.toUpperCase() === identity.toUpperCase() || u.username.toLowerCase() === identity.toLowerCase()) 
+                && u.password === password
+            );
+
+            if (!user) {
+                showToast('ID APK/Username atau password salah!', 'error');
+                return;
+            }
+
+            currentUser = user;
+            isDeveloper = false;
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            localStorage.setItem('isDeveloper', 'false');
+
+            showToast('Login berhasil!', 'success');
+            showMainApp();
+        }
+
+        function handleDevLogin() {
+            const key = document.getElementById('devKey').value;
+
+            if (key !== DEV_KEY) {
+                showToast('Developer key salah!', 'error');
+                return;
+            }
+
+            // Create dev user if not exists
+            let users = JSON.parse(localStorage.getItem('users'));
+            let devUser = users.find(u => u.id === 'DEV001');
+
+            if (!devUser) {
+                devUser = {
+                    id: 'DEV001',
+                    apkId: 'DEVMASTER',
+                    username: 'Developer',
+                    password: 'dev',
+                    balance: 999999999,
+                    createdAt: new Date().toISOString()
+                };
+                users.push(devUser);
+                localStorage.setItem('users', JSON.stringify(users));
+            }
+
+            currentUser = devUser;
+            isDeveloper = true;
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            localStorage.setItem('isDeveloper', 'true');
+
+            showToast('Login developer berhasil!', 'success');
+            showMainApp();
+        }
+
+        function handleLogout() {
+            currentUser = null;
+            isDeveloper = false;
+            localStorage.removeItem('currentUser');
+            localStorage.removeItem('isDeveloper');
+
+            document.getElementById('mainApp').classList.add('hidden');
+            document.getElementById('authPage').classList.remove('hidden');
+            showLogin();
+
+            // Clear inputs
+            document.getElementById('loginUsername').value = '';
+            document.getElementById('loginPassword').value = '';
+        }
+
+        function showMainApp() {
+            document.getElementById('authPage').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
+
+            // Update UI
+            updateUserInfo();
+
+            // Show/hide developer nav
+            if (isDeveloper) {
+                document.getElementById('devNav').classList.remove('hidden');
+            } else {
+                document.getElementById('devNav').classList.add('hidden');
+            }
+
+            // Load initial data
+            switchPage('dashboard');
+        }
+
+        function updateUserInfo() {
+            if (!currentUser) return;
+
+            document.getElementById('userName').textContent = currentUser.username;
+            document.getElementById('userAvatar').textContent = currentUser.username.charAt(0).toUpperCase();
+            document.getElementById('displayUserId').textContent = currentUser.id;
+            document.getElementById('welcomeName').textContent = currentUser.username;
+            document.getElementById('userIdBadge').textContent = currentUser.id;
+            document.getElementById('balanceDisplay').textContent = formatRupiah(currentUser.balance);
+            document.getElementById('currentBalanceDisplay').textContent = formatRupiah(currentUser.balance);
+            
+            // Update APK ID display
+            document.getElementById('apkIdDisplay').textContent = currentUser.apkId || '-';
+            document.getElementById('apkIdInfo').textContent = currentUser.apkId || '-';
+
+            // Update transaction count
+            const transactions = JSON.parse(localStorage.getItem('transactions'));
+            const userTransactions = transactions.filter(t => t.userId === currentUser.id && t.status === 'success');
+            document.getElementById('totalTransactions').textContent = userTransactions.length;
+        }
+
+        // ==================== NAVIGATION ====================
+        function switchPage(page) {
+            // Update nav
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.dataset.page === page) {
+                    item.classList.add('active');
+                }
+            });
+
+            // Show page
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById('page-' + page).classList.add('active');
+
+            // Load page data
+            if (page === 'dashboard') {
+                updateUserInfo();
+            } else if (page === 'history') {
+                renderTransactions();
+            } else if (page === 'developer' && isDeveloper) {
+                renderDevPanel();
+            }
+
+            // Close mobile sidebar
+            closeSidebar();
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('sidebarOverlay').classList.toggle('active');
+        }
+
+        function closeSidebar() {
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('sidebarOverlay').classList.remove('active');
+        }
+
+        // ==================== GAMES & PRODUCTS ====================
+        function renderGames() {
+            const container = document.getElementById('gameList');
+            container.innerHTML = games.map(game => `
+                <div class="product-card text-center" onclick="selectGame('${game.id}')" data-game="${game.id}">
+                    <div class="w-16 h-16 mx-auto mb-3 rounded-xl bg-gradient-to-br ${game.color} flex items-center justify-center font-display font-bold text-lg text-white">
+                        ${game.image}
+                    </div>
+                    <p class="font-semibold text-sm">${game.name}</p>
+                </div>
+            `).join('');
+        }
+
+        function selectGame(gameId) {
+            selectedGame = gameId;
+
+            // Update selection
+            document.querySelectorAll('[data-game]').forEach(card => {
+                card.classList.remove('selected');
+                if (card.dataset.game === gameId) {
+                    card.classList.add('selected');
+                }
+            });
+
+            // Show products
+            renderProducts(gameId);
+            document.getElementById('productSection').style.display = 'block';
+            document.getElementById('purchaseForm').style.display = 'none';
+        }
+
+        function renderProducts(gameId) {
+            const gameProducts = products[gameId] || [];
+            const container = document.getElementById('productList');
+
+            container.innerHTML = gameProducts.map(product => `
+                <div class="product-card" onclick="selectProduct('${product.id}', '${gameId}')" data-product="${product.id}">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="diamond-icon"></div>
+                        <div>
+                            <p class="font-bold text-lg">${product.diamond}</p>
+                            <p class="text-xs text-gray-500">Diamond</p>
+                        </div>
+                    </div>
+                    <p class="text-emerald-400 font-bold">${formatRupiah(product.price)}</p>
+                </div>
+            `).join('');
+        }
+
+        function selectProduct(productId, gameId) {
+            const gameProducts = products[gameId] || [];
+            selectedProductData = gameProducts.find(p => p.id === productId);
+
+            if (!selectedProductData) return;
+
+            // Update selection
+            document.querySelectorAll('[data-product]').forEach(card => {
+                card.classList.remove('selected');
+                if (card.dataset.product === productId) {
+                    card.classList.add('selected');
+                }
+            });
+
+            // Show purchase form
+            const game = games.find(g => g.id === gameId);
+            document.getElementById('selectedProduct').textContent = `${game.name} - ${selectedProductData.name}`;
+            document.getElementById('selectedPrice').textContent = formatRupiah(selectedProductData.price);
+            document.getElementById('currentBalanceDisplay').textContent = formatRupiah(currentUser.balance);
+            document.getElementById('purchaseForm').style.display = 'block';
+
+            // Refresh user data
+            refreshUserData();
+        }
+
+        // ==================== TRANSACTIONS ====================
+        function processPurchase() {
+            if (!selectedProductData) {
+                showToast('Pilih produk terlebih dahulu!', 'error');
+                return;
+            }
+
+            refreshUserData();
+
+            if (currentUser.balance < selectedProductData.price) {
+                showToast('Saldo tidak mencukupi!', 'error');
+                return;
+            }
+
+            const gameUserId = document.getElementById('gameUserId').value.trim();
+            const game = games.find(g => g.id === selectedGame);
+
+            // Create transaction
+            const transaction = {
+                id: generateTransactionId(),
+                userId: currentUser.id,
+                apkId: currentUser.apkId,
+                username: currentUser.username,
+                game: game.name,
+                product: selectedProductData.name,
+                diamond: selectedProductData.diamond,
+                price: selectedProductData.price,
+                gameId: gameUserId || '-',
+                status: 'success',
+                createdAt: new Date().toISOString()
+            };
+
+            // Save transaction
+            const transactions = JSON.parse(localStorage.getItem('transactions'));
+            transactions.unshift(transaction);
+            localStorage.setItem('transactions', JSON.stringify(transactions));
+
+            // Deduct balance
+            deductBalance(currentUser.id, selectedProductData.price);
+
+            // Send Telegram notification
+            sendTelegramNotification(transaction);
+
+            showToast('Transaksi berhasil! Diamond akan masuk dalam 1-5 menit.', 'success');
+
+            // Reset selection
+            selectedProductData = null;
+            document.getElementById('gameUserId').value = '';
+            document.querySelectorAll('[data-product]').forEach(card => card.classList.remove('selected'));
+            document.getElementById('purchaseForm').style.display = 'none';
+
+            // Refresh data
+            refreshUserData();
+            updateUserInfo();
+        }
+
+        function renderTransactions() {
+            const transactions = JSON.parse(localStorage.getItem('transactions'));
+            const userTransactions = isDeveloper 
+                ? transactions 
+                : transactions.filter(t => t.userId === currentUser.id);
+
+            const container = document.getElementById('transactionList');
+
+            if (userTransactions.length === 0) {
+                container.innerHTML = `
+                    <div class="card p-8 text-center">
+                        <svg class="w-16 h-16 mx-auto text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                        </svg>
+                        <p class="text-gray-500">Belum ada transaksi</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = userTransactions.map(t => `
+                <div class="transaction-item">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-cyan-500/20 to-emerald-500/20 flex items-center justify-center">
+                                <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="font-semibold">${t.game} - ${t.product}</p>
+                                <p class="text-xs text-gray-500">${formatDate(t.createdAt)}</p>
+                            </div>
+                        </div>
+                        <span class="badge badge-${t.status}">${t.status === 'success' ? 'Sukses' : t.status === 'pending' ? 'Pending' : 'Gagal'}</span>
+                    </div>
+                    <div class="flex items-center justify-between text-sm">
+                        <div>
+                            <span class="text-gray-500">ID Transaksi:</span>
+                            <span class="text-gray-300 ml-2 font-mono">${t.id}</span>
+                        </div>
+                        <p class="text-emerald-400 font-bold">${formatRupiah(t.price)}</p>
+                    </div>
+                    ${isDeveloper ? `<p class="text-xs text-gray-500 mt-2">User: ${t.username} (${t.apkId || t.userId})</p>` : ''}
+                </div>
+            `).join('');
+        }
+
+        // ==================== DEVELOPER FUNCTIONS ====================
+        function searchUserByApkId() {
+            const apkId = document.getElementById('targetUserId').value.trim().toUpperCase();
+            const searchResult = document.getElementById('searchResult');
+
+            if (!apkId) {
+                searchResult.classList.add('hidden');
+                return;
+            }
+
+            const users = JSON.parse(localStorage.getItem('users'));
+            const user = users.find(u => u.apkId.toUpperCase() === apkId);
+
+            if (user) {
+                searchResult.classList.remove('hidden');
+                document.getElementById('foundUserName').textContent = user.username;
+                document.getElementById('foundUserBalance').textContent = formatRupiah(user.balance);
+            } else {
+                searchResult.classList.add('hidden');
+            }
+        }
+
+        function renderDevPanel() {
+            const users = JSON.parse(localStorage.getItem('users'));
+            const transactions = JSON.parse(localStorage.getItem('transactions'));
+
+            // Stats
+            document.getElementById('totalUsers').textContent = users.length;
+            document.getElementById('devTotalTransactions').textContent = transactions.filter(t => t.status === 'success').length;
+            
+            const totalRevenue = transactions
+                .filter(t => t.status === 'success')
+                .reduce((sum, t) => sum + t.price, 0);
+            document.getElementById('totalRevenue').textContent = formatRupiah(totalRevenue);
+
+            // User table
+            renderUserTable(users, transactions);
+        }
+
+        function renderUserTable(users, transactions) {
+            const tbody = document.getElementById('userListTable');
+            tbody.innerHTML = users.map(user => {
+                const userTransactions = transactions.filter(t => t.userId === user.id && t.status === 'success');
+                return `
+                    <tr class="border-b border-gray-800 hover:bg-gray-800/30 transition-colors">
+                        <td class="py-3 px-4">
+                            <span class="apk-id-badge">${user.apkId || '-'}</span>
+                        </td>
+                        <td class="py-3 px-4">${user.username}</td>
+                        <td class="py-3 px-4 text-right font-bold text-emerald-400">${formatRupiah(user.balance)}</td>
+                        <td class="py-3 px-4 text-right">${userTransactions.length}</td>
+                        <td class="py-3 px-4 text-center">
+                            <button class="copy-btn text-xs" onclick="quickTopUp('${user.apkId}')">Isi Saldo</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function searchUserList() {
+            const searchTerm = document.getElementById('searchUserInput').value.trim().toUpperCase();
+            const users = JSON.parse(localStorage.getItem('users'));
+            const transactions = JSON.parse(localStorage.getItem('transactions'));
+
+            let filteredUsers = users;
+            if (searchTerm) {
+                filteredUsers = users.filter(u => 
+                    (u.apkId && u.apkId.toUpperCase().includes(searchTerm)) || 
+                    u.username.toUpperCase().includes(searchTerm)
+                );
+            }
+
+            renderUserTable(filteredUsers, transactions);
+        }
+
+        function quickTopUp(apkId) {
+            document.getElementById('targetUserId').value = apkId;
+            searchUserByApkId();
+            document.getElementById('topUpAmount').focus();
+        }
+
+        function topUpSaldo() {
+            const targetApkId = document.getElementById('targetUserId').value.trim().toUpperCase();
+            const amount = parseInt(document.getElementById('topUpAmount').value);
+
+            if (!targetApkId) {
+                showToast('Masukkan ID APK target!', 'error');
+                return;
+            }
+
+            if (!amount || amount <= 0) {
+                showToast('Masukkan nominal yang valid!', 'error');
+                return;
+            }
+
+            const users = JSON.parse(localStorage.getItem('users'));
+            const userIndex = users.findIndex(u => u.apkId.toUpperCase() === targetApkId);
+
+            if (userIndex === -1) {
+                showToast('ID APK tidak ditemukan!', 'error');
+                return;
+            }
+
+            users[userIndex].balance += amount;
+            localStorage.setItem('users', JSON.stringify(users));
+
+            // Create transaction record
+            const transaction = {
+                id: generateTransactionId(),
+                userId: users[userIndex].id,
+                apkId: users[userIndex].apkId,
+                username: users[userIndex].username,
+                game: 'Top Up Saldo',
+                product: `Saldo +${formatRupiah(amount)}`,
+                diamond: 0,
+                price: amount,
+                gameId: '-',
+                status: 'success',
+                type: 'topup',
+                createdAt: new Date().toISOString()
+            };
+
+            const transactions = JSON.parse(localStorage.getItem('transactions'));
+            transactions.unshift(transaction);
+            localStorage.setItem('transactions', JSON.stringify(transactions));
+
+            // Send Telegram notification
+            sendDevTelegramNotification(users[userIndex], amount, 'topup');
+
+            showToast(`Berhasil menambah Rp ${amount.toLocaleString('id-ID')} ke ${users[userIndex].username}!`, 'success');
+
+            // Clear inputs
+            document.getElementById('targetUserId').value = '';
+            document.getElementById('topUpAmount').value = '';
+            document.getElementById('searchResult').classList.add('hidden');
+
+            // Refresh
+            refreshUserData();
+            renderDevPanel();
+        }
+
+        function reduceSaldo() {
+            const targetApkId = document.getElementById('targetUserId').value.trim().toUpperCase();
+            const amount = parseInt(document.getElementById('topUpAmount').value);
+
+            if (!targetApkId) {
+                showToast('Masukkan ID APK target!', 'error');
+                return;
+            }
+
+            if (!amount || amount <= 0) {
+                showToast('Masukkan nominal yang valid!', 'error');
+                return;
+            }
+
+            const users = JSON.parse(localStorage.getItem('users'));
+            const userIndex = users.findIndex(u => u.apkId.toUpperCase() === targetApkId);
+
+            if (userIndex === -1) {
+                showToast('ID APK tidak ditemukan!', 'error');
+                return;
+            }
+
+            if (users[userIndex].balance < amount) {
+                showToast('Saldo user tidak mencukupi!', 'error');
+                return;
+            }
+
+            users[userIndex].balance -= amount;
+            localStorage.setItem('users', JSON.stringify(users));
+
+            // Send Telegram notification
+            sendDevTelegramNotification(users[userIndex], amount, 'reduce');
+
+            showToast(`Berhasil mengurangi Rp ${amount.toLocaleString('id-ID')} dari ${users[userIndex].username}!`, 'success');
+
+            // Clear inputs
+            document.getElementById('targetUserId').value = '';
+            document.getElementById('topUpAmount').value = '';
+            document.getElementById('searchResult').classList.add('hidden');
+
+            // Refresh
+            refreshUserData();
+            renderDevPanel();
+        }
+
+        function setAmount(amount) {
+            document.getElementById('topUpAmount').value = amount;
+        }
+
+        // ==================== HELPER FUNCTIONS ====================
+        function generateUserId() {
+            return 'ZTH' + Math.random().toString(36).substr(2, 6).toUpperCase();
+        }
+
+        function generateTransactionId() {
+            return 'TRX' + Date.now().toString(36).toUpperCase();
+        }
+
+        function formatRupiah(amount) {
+            return 'Rp ' + (amount || 0).toLocaleString('id-ID');
+        }
+
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('id-ID', { 
+                day: 'numeric', 
+                month: 'short', 
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function refreshUserData() {
+            if (!currentUser) return;
+            const users = JSON.parse(localStorage.getItem('users'));
+            const freshUser = users.find(u => u.id === currentUser.id);
+            if (freshUser) {
+                currentUser = freshUser;
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            }
+        }
+
+        function deductBalance(userId, amount) {
+            const users = JSON.parse(localStorage.getItem('users'));
+            const userIndex = users.findIndex(u => u.id === userId);
+            if (userIndex !== -1) {
+                users[userIndex].balance -= amount;
+                localStorage.setItem('users', JSON.stringify(users));
+                
+                if (currentUser && currentUser.id === userId) {
+                    currentUser = users[userIndex];
+                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                }
+            }
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            const icon = toast.querySelector('svg');
+
+            toastMessage.textContent = message;
+
+            if (type === 'error') {
+                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>';
+                icon.classList.remove('text-emerald-400');
+                icon.classList.add('text-red-400');
+                toast.style.borderColor = '#ff4757';
+            } else {
+                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>';
+                icon.classList.remove('text-red-400');
+                icon.classList.add('text-emerald-400');
+                toast.style.borderColor = '#00d4aa';
+            }
+
+            toast.classList.add('show');
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3500);
+        }
+
+        function copyUserId() {
+            if (!currentUser) return;
+            navigator.clipboard.writeText(currentUser.id).then(() => {
+                showToast('User ID berhasil disalin!', 'success');
+            }).catch(() => {
+                showToast('Gagal menyalin User ID', 'error');
+            });
+        }
+
+        function copyApkId() {
+            if (!currentUser || !currentUser.apkId) return;
+            navigator.clipboard.writeText(currentUser.apkId).then(() => {
+                showToast('ID APK berhasil disalin!', 'success');
+            }).catch(() => {
+                showToast('Gagal menyalin ID APK', 'error');
+            });
+        }
+
+        function showHelp() {
+            const modal = document.getElementById('modal');
+            const content = document.getElementById('modalContent');
+
+            content.innerHTML = `
+                <h3 class="font-display text-2xl font-bold mb-4">Cara Top Up</h3>
+                <div class="space-y-4 text-gray-300">
+                    <div class="flex gap-3">
+                        <span class="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold flex-shrink-0">1</span>
+                        <p>Salin ID APK Anda dan kirim ke Developer untuk pengisian saldo</p>
+                    </div>
+                    <div class="flex gap-3">
+                        <span class="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold flex-shrink-0">2</span>
+                        <p>Developer akan mengisi saldo ke akun Anda berdasarkan ID APK</p>
+                    </div>
+                    <div class="flex gap-3">
+                        <span class="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold flex-shrink-0">3</span>
+                        <p>Login di perangkat manapun dengan ID APK dan password Anda</p>
+                    </div>
+                    <div class="flex gap-3">
+                        <span class="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold flex-shrink-0">4</span>
+                        <p>Pilih game dan nominal diamond, lalu lakukan pembelian</p>
+                    </div>
+                </div>
+                <div class="mt-6 p-4 bg-gray-800/50 rounded-xl">
+                    <p class="text-sm text-gray-400">ID APK Anda:</p>
+                    <p class="text-amber-400 font-bold font-mono text-lg">${currentUser ? currentUser.apkId : '-'}</p>
+                </div>
+                <div class="mt-4 p-4 bg-gray-800/50 rounded-xl">
+                    <p class="text-sm text-gray-400">Telegram Developer:</p>
+                    <p class="text-cyan-400 font-bold">@AdminZenith</p>
+                </div>
+                <button class="btn-secondary w-full mt-6" onclick="closeModal()">Tutup</button>
+            `;
+
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+        }
+
+        // Telegram notification REAL
+        async function sendTelegramNotification(transaction) {
+            if (!BOT_TOKEN || !CHAT_ID) {
+                console.log('Token atau Chat ID belum diisi');
+                return;
+            }
+
+            const message = `
+📢 *TRANSAKSI BARU*
+━━━━━━━━━━━━━━━
+🆔 ID Trx: ${transaction.id}
+🏷️ ID APK: ${transaction.apkId || '-'}
+👤 User: ${transaction.username}
+🎮 Game: ${transaction.game}
+🆔 ID Game: ${transaction.gameId || '-'}
+💎 Item: ${transaction.product}
+💰 Harga: Rp ${transaction.price.toLocaleString('id-ID')}
+⏰ Waktu: ${new Date().toLocaleString('id-ID')}
+━━━━━━━━━━━━━━━
+✅ Status: SUKSES
+            `;
+
+            try {
+                const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: CHAT_ID,
+                        text: message,
+                        parse_mode: 'Markdown'
+                    })
+                });
+                const data = await response.json();
+                if (!data.ok) {
+                    console.error('Telegram Error:', data.description);
+                }
+            } catch (error) {
+                console.error('Gagal kirim ke Telegram:', error);
+            }
+        }
+
+        // Notification for new user registration
+        function sendNewUserNotification(user) {
+            if (!BOT_TOKEN || !CHAT_ID) return;
+
+            const message = `
+👤 *USER BARU TERDAFTAR*
+━━━━━━━━━━━━━━━
+🏷️ ID APK: ${user.apkId}
+👤 Username: ${user.username}
+🆔 User ID: ${user.id}
+⏰ Waktu: ${new Date().toLocaleString('id-ID')}
+━━━━━━━━━━━━━━━
+            `;
+
+            fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    chat_id: CHAT_ID,
+                    text: message,
+                    parse_mode: 'Markdown'
+                })
+            });
+        }
+
+        // Dev notification for balance changes
+        function sendDevTelegramNotification(user, amount, type) {
+            if (!BOT_TOKEN || !CHAT_ID) return;
+
+            const message = `
+⚙️ *PANEL DEVELOPER*
+━━━━━━━━━━━━━━━
+🔧 Aksi: ${type === 'topup' ? 'TAMBAH SALDO' : 'KURANGI SALDO'}
+🏷️ ID APK: ${user.apkId}
+👤 Target: ${user.username}
+💵 Nominal: Rp ${amount.toLocaleString('id-ID')}
+💳 Saldo Sekarang: Rp ${user.balance.toLocaleString('id-ID')}
+⏰ Waktu: ${new Date().toLocaleString('id-ID')}
+━━━━━━━━━━━━━━━
+            `;
+
+            fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    chat_id: CHAT_ID,
+                    text: message,
+                    parse_mode: 'Markdown'
+                })
+            });
+        }
+
+        // Close modal on outside click
+        document.getElementById('modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Initialize
+        init();
+    </script>
+</body>
+</html>            font-weight: 600;
             margin-top: 10px;
         }
 
