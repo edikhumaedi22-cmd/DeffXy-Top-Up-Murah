@@ -3,23 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GameTop Up - Top Up Game Terpercaya</title>
+    <title>NEXUS TOP UP - Portal Game Terpercaya</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-primary: #0a0a0f;
-            --bg-secondary: #12121a;
-            --bg-card: #1a1a25;
+            --bg-primary: #0a0e17;
+            --bg-secondary: #111827;
+            --bg-card: #1a2332;
             --accent: #00d4aa;
-            --accent-dim: #00a88a;
-            --text-primary: #f0f0f5;
-            --text-secondary: #8888a0;
-            --border: #2a2a3a;
+            --accent-glow: rgba(0, 212, 170, 0.3);
             --danger: #ff4757;
             --warning: #ffa502;
-            --success: #00d4aa;
-            --telegram: #0088cc;
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+            --border: #2d3a4f;
         }
 
         * {
@@ -36,80 +34,1541 @@
             overflow-x: hidden;
         }
 
-        h1, h2, h3, h4, h5, h6 {
-            font-family: 'Space Grotesk', sans-serif;
+        .font-display {
+            font-family: 'Orbitron', monospace;
         }
 
-        .bg-grid {
+        /* Animated Background */
+        .bg-mesh {
             position: fixed;
             inset: 0;
+            z-index: 0;
+            background: 
+                radial-gradient(ellipse 80% 50% at 20% 20%, rgba(0, 212, 170, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse 60% 40% at 80% 80%, rgba(0, 150, 255, 0.06) 0%, transparent 50%),
+                linear-gradient(180deg, var(--bg-primary) 0%, #0d1320 100%);
+        }
+
+        .grid-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
             background-image: 
                 linear-gradient(rgba(0, 212, 170, 0.03) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(0, 212, 170, 0.03) 1px, transparent 1px);
-            background-size: 50px 50px;
+            background-size: 60px 60px;
             pointer-events: none;
-            z-index: 0;
         }
 
-        .bg-glow {
+        /* Floating Particles */
+        .particle {
             position: fixed;
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(0, 212, 170, 0.15) 0%, transparent 70%);
+            width: 4px;
+            height: 4px;
+            background: var(--accent);
             border-radius: 50%;
-            filter: blur(80px);
             pointer-events: none;
-            z-index: 0;
+            z-index: 2;
+            animation: float 20s infinite linear;
+            opacity: 0.4;
         }
 
-        .glow-1 { top: -200px; left: -200px; }
-        .glow-2 { bottom: -200px; right: -200px; background: radial-gradient(circle, rgba(0, 168, 138, 0.1) 0%, transparent 70%); }
+        @keyframes float {
+            0%, 100% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.4; }
+            90% { opacity: 0.4; }
+            100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+        }
 
+        /* Main Container */
+        .main-container {
+            position: relative;
+            z-index: 10;
+            min-height: 100vh;
+        }
+
+        /* Cards */
         .card {
-            background: var(--bg-card);
+            background: linear-gradient(135deg, var(--bg-card) 0%, rgba(26, 35, 50, 0.8) 100%);
             border: 1px solid var(--border);
             border-radius: 16px;
             backdrop-filter: blur(10px);
-        }
-
-        .card-hover {
             transition: all 0.3s ease;
         }
 
-        .card-hover:hover {
+        .card:hover {
             border-color: var(--accent);
-            transform: translateY(-4px);
-            box-shadow: 0 20px 40px rgba(0, 212, 170, 0.1);
+            box-shadow: 0 0 30px var(--accent-glow);
         }
 
+        /* Buttons */
         .btn-primary {
-            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dim) 100%);
+            background: linear-gradient(135deg, var(--accent) 0%, #00b894 100%);
             color: var(--bg-primary);
             font-weight: 600;
             padding: 12px 24px;
-            border-radius: 12px;
+            border-radius: 10px;
             border: none;
             cursor: pointer;
             transition: all 0.3s ease;
-            font-family: 'Space Grotesk', sans-serif;
+            position: relative;
+            overflow: hidden;
         }
 
         .btn-primary:hover {
-            transform: scale(1.02);
-            box-shadow: 0 10px 30px rgba(0, 212, 170, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px var(--accent-glow);
         }
 
         .btn-primary:active {
-            transform: scale(0.98);
-        }
-
-        .btn-primary:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
+            transform: translateY(0);
         }
 
         .btn-secondary {
+            background: transparent;
+            color: var(--text-primary);
+            font-weight: 500;
+            padding: 12px 24px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger) 0%, #ee5a52 100%);
+            color: white;
+            font-weight: 600;
+            padding: 12px 24px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 71, 87, 0.3);
+        }
+
+        /* Input Fields */
+        .input-field {
+            width: 100%;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px 16px;
+            color: var(--text-primary);
+            font-size: 15px;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .input-field:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .input-field::placeholder {
+            color: var(--text-secondary);
+        }
+
+        /* Navigation */
+        .nav-link {
+            color: var(--text-secondary);
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--accent);
+            background: rgba(0, 212, 170, 0.1);
+        }
+
+        /* Game Card */
+        .game-card {
+            background: linear-gradient(145deg, var(--bg-card) 0%, rgba(26, 35, 50, 0.6) 100%);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .game-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: var(--accent);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 40px var(--accent-glow);
+        }
+
+        .game-card img {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .game-card:hover img {
+            transform: scale(1.1);
+        }
+
+        /* Balance Card */
+        .balance-card {
+            background: linear-gradient(135deg, #1a2a3a 0%, #0d1a2a 100%);
+            border: 2px solid var(--accent);
+            border-radius: 20px;
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .balance-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+            animation: pulse-glow 3s infinite;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.1); }
+        }
+
+        /* Transaction Item */
+        .transaction-item {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .transaction-item:hover {
+            border-color: rgba(0, 212, 170, 0.3);
+            background: var(--bg-card);
+        }
+
+        /* Status Badges */
+        .badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-pending {
+            background: rgba(255, 165, 2, 0.2);
+            color: var(--warning);
+        }
+
+        .badge-success {
+            background: rgba(0, 212, 170, 0.2);
+            color: var(--accent);
+        }
+
+        .badge-failed {
+            background: rgba(255, 71, 87, 0.2);
+            color: var(--danger);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 32px;
+            max-width: 480px;
+            width: 90%;
+            transform: scale(0.9) translateY(20px);
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1) translateY(0);
+        }
+
+        /* Tab System */
+        .tab-btn {
+            padding: 12px 24px;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            color: var(--accent);
+        }
+
+        .tab-btn::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: width 0.3s ease;
+        }
+
+        .tab-btn.active::after {
+            width: 80%;
+        }
+
+        /* Scroll Animation */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-desktop { display: none; }
+            .mobile-menu-btn { display: flex !important; }
+        }
+
+        @media (min-width: 769px) {
+            .mobile-menu { display: none !important; }
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Notification Toast */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 200;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transform: translateX(120%);
+            transition: transform 0.4s ease;
+            min-width: 300px;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.success { border-left: 4px solid var(--accent); }
+        .toast.error { border-left: 4px solid var(--danger); }
+        .toast.warning { border-left: 4px solid var(--warning); }
+
+        /* Reduced Motion */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Elements -->
+    <div class="bg-mesh"></div>
+    <div class="grid-overlay"></div>
+    <div id="particles"></div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Main App -->
+    <div class="main-container">
+        <!-- Auth Screen -->
+        <div id="authScreen" class="min-h-screen flex items-center justify-center p-4">
+            <div class="card p-8 w-full max-w-md fade-in">
+                <div class="text-center mb-8">
+                    <h1 class="font-display text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#00d4aa] to-[#00b4d8]">NEXUS</h1>
+                    <p class="text-[var(--text-secondary)] mt-2">Portal Top Up Game Terpercaya</p>
+                </div>
+
+                <!-- Auth Tabs -->
+                <div class="flex justify-center border-b border-[var(--border)] mb-6">
+                    <button class="tab-btn active" onclick="switchAuthTab('login')">Masuk</button>
+                    <button class="tab-btn" onclick="switchAuthTab('register')">Daftar</button>
+                </div>
+
+                <!-- Login Form -->
+                <form id="loginForm" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-2 text-[var(--text-secondary)]">Username</label>
+                        <input type="text" id="loginUsername" class="input-field" placeholder="Masukkan username" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2 text-[var(--text-secondary)]">Password</label>
+                        <input type="password" id="loginPassword" class="input-field" placeholder="Masukkan password" required>
+                    </div>
+                    <button type="submit" class="btn-primary w-full mt-6">Masuk</button>
+                </form>
+
+                <!-- Register Form -->
+                <form id="registerForm" class="space-y-4 hidden">
+                    <div>
+                        <label class="block text-sm font-medium mb-2 text-[var(--text-secondary)]">Username</label>
+                        <input type="text" id="regUsername" class="input-field" placeholder="Buat username" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2 text-[var(--text-secondary)]">Email</label>
+                        <input type="email" id="regEmail" class="input-field" placeholder="Masukkan email" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2 text-[var(--text-secondary)]">Password</label>
+                        <input type="password" id="regPassword" class="input-field" placeholder="Buat password" required>
+                    </div>
+                    <button type="submit" class="btn-primary w-full mt-6">Daftar Sekarang</button>
+                </form>
+
+                <div class="mt-6 text-center">
+                    <p class="text-[var(--text-secondary)] text-sm">Developer? 
+                        <span class="text-[var(--accent)] cursor-pointer hover:underline" onclick="openDevLogin()">Login di sini</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Dashboard -->
+        <div id="dashboardScreen" class="hidden">
+            <!-- Navigation -->
+            <nav class="sticky top-0 z-50 backdrop-blur-xl bg-[var(--bg-primary)]/80 border-b border-[var(--border)]">
+                <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+                    <h1 class="font-display text-xl font-bold text-[var(--accent)]">NEXUS</h1>
+                    
+                    <!-- Desktop Nav -->
+                    <div class="nav-desktop flex items-center gap-2">
+                        <span class="nav-link active" onclick="showSection('home')">Beranda</span>
+                        <span class="nav-link" onclick="showSection('games')">Games</span>
+                        <span class="nav-link" onclick="showSection('history')">Riwayat</span>
+                        <span class="nav-link" onclick="showSection('deposit')">Isi Saldo</span>
+                    </div>
+
+                    <div class="flex items-center gap-4">
+                        <div class="hidden sm:flex items-center gap-2 bg-[var(--bg-card)] px-4 py-2 rounded-lg border border-[var(--border)]">
+                            <svg class="w-5 h-5 text-[var(--accent)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <span id="navBalance" class="font-semibold">Rp 0</span>
+                        </div>
+                        <div class="relative">
+                            <button onclick="toggleUserMenu()" class="flex items-center gap-2 bg-[var(--bg-card)] px-4 py-2 rounded-lg border border-[var(--border)] hover:border-[var(--accent)] transition-all">
+                                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-[var(--accent)] to-[#00b4d8] flex items-center justify-center font-bold text-[var(--bg-primary)]" id="userAvatar">U</div>
+                                <span id="userName" class="hidden sm:block">User</span>
+                            </button>
+                            <div id="userMenu" class="absolute right-0 top-full mt-2 w-48 bg-[var(--bg-card)] border border-[var(--border)] rounded-lg shadow-xl hidden">
+                                <div class="p-2">
+                                    <span class="block px-4 py-2 text-[var(--text-secondary)] text-sm" id="menuUserEmail">user@email.com</span>
+                                    <hr class="border-[var(--border)] my-2">
+                                    <button onclick="logout()" class="w-full text-left px-4 py-2 text-[var(--danger)] hover:bg-[var(--bg-secondary)] rounded-lg transition-all">Keluar</button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Mobile Menu Button -->
+                        <button onclick="toggleMobileMenu()" class="mobile-menu-btn hidden p-2 hover:bg-[var(--bg-card)] rounded-lg">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Mobile Menu -->
+                <div id="mobileMenu" class="mobile-menu hidden border-t border-[var(--border)] p-4">
+                    <div class="flex flex-col gap-2">
+                        <span class="nav-link active" onclick="showSection('home'); toggleMobileMenu()">Beranda</span>
+                        <span class="nav-link" onclick="showSection('games'); toggleMobileMenu()">Games</span>
+                        <span class="nav-link" onclick="showSection('history'); toggleMobileMenu()">Riwayat</span>
+                        <span class="nav-link" onclick="showSection('deposit'); toggleMobileMenu()">Isi Saldo</span>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Home Section -->
+            <section id="homeSection" class="max-w-7xl mx-auto px-4 py-8">
+                <!-- Welcome Banner -->
+                <div class="card p-8 mb-8 relative overflow-hidden fade-in">
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-[var(--accent)] to-transparent opacity-10 rounded-full blur-3xl"></div>
+                    <h2 class="font-display text-2xl md:text-3xl font-bold mb-2">Selamat Datang, <span id="welcomeName">User</span>!</h2>
+                    <p class="text-[var(--text-secondary)]">Top up game favoritmu dengan mudah dan cepat</p>
+                </div>
+
+                <!-- Balance Card -->
+                <div class="balance-card mb-8 fade-in">
+                    <div class="relative z-10">
+                        <p class="text-[var(--text-secondary)] text-sm mb-1">Saldo Tersedia</p>
+                        <h3 class="font-display text-3xl md:text-4xl font-bold mb-4" id="mainBalance">Rp 0</h3>
+                        <div class="flex flex-wrap gap-3">
+                            <button onclick="showSection('deposit')" class="btn-primary">Isi Saldo</button>
+                            <button onclick="showSection('games')" class="btn-secondary">Top Up Game</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                    <div class="card p-4 text-center fade-in">
+                        <p class="text-[var(--text-secondary)] text-sm">Total Transaksi</p>
+                        <p class="font-display text-2xl font-bold text-[var(--accent)]" id="totalTransactions">0</p>
+                    </div>
+                    <div class="card p-4 text-center fade-in">
+                        <p class="text-[var(--text-secondary)] text-sm">Total Top Up</p>
+                        <p class="font-display text-2xl font-bold text-[var(--accent)]" id="totalTopup">Rp 0</p>
+                    </div>
+                    <div class="card p-4 text-center fade-in">
+                        <p class="text-[var(--text-secondary)] text-sm">Member Sejak</p>
+                        <p class="font-display text-2xl font-bold text-[var(--accent)]" id="memberSince">-</p>
+                    </div>
+                    <div class="card p-4 text-center fade-in">
+                        <p class="text-[var(--text-secondary)] text-sm">Status</p>
+                        <p class="font-display text-lg font-bold text-[var(--accent)]">Aktif</p>
+                    </div>
+                </div>
+
+                <!-- Popular Games -->
+                <div class="mb-8">
+                    <h3 class="font-display text-xl font-bold mb-4">Game Populer</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="popularGames"></div>
+                </div>
+            </section>
+
+            <!-- Games Section -->
+            <section id="gamesSection" class="max-w-7xl mx-auto px-4 py-8 hidden">
+                <h2 class="font-display text-2xl font-bold mb-6">Pilih Game</h2>
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" id="allGames"></div>
+            </section>
+
+            <!-- History Section -->
+            <section id="historySection" class="max-w-7xl mx-auto px-4 py-8 hidden">
+                <h2 class="font-display text-2xl font-bold mb-6">Riwayat Transaksi</h2>
+                <div class="space-y-4" id="transactionList">
+                    <div class="text-center py-12 text-[var(--text-secondary)]">
+                        <svg class="w-16 h-16 mx-auto mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                        </svg>
+                        <p>Belum ada transaksi</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Deposit Section -->
+            <section id="depositSection" class="max-w-7xl mx-auto px-4 py-8 hidden">
+                <h2 class="font-display text-2xl font-bold mb-6">Isi Saldo</h2>
+                
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="card p-6">
+                        <h3 class="font-semibold text-lg mb-4">Pilih Nominal</h3>
+                        <div class="grid grid-cols-2 gap-3 mb-6" id="depositAmounts"></div>
+                        
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium mb-2 text-[var(--text-secondary)]">Atau masukkan nominal lain</label>
+                            <input type="number" id="customDeposit" class="input-field" placeholder="Minimal Rp 10.000">
+                        </div>
+
+                        <button onclick="requestDeposit()" class="btn-primary w-full">Ajukan Isi Saldo</button>
+                    </div>
+
+                    <div class="card p-6">
+                        <h3 class="font-semibold text-lg mb-4">Informasi Pembayaran</h3>
+                        <div class="bg-[var(--bg-secondary)] rounded-lg p-4 mb-4">
+                            <p class="text-[var(--text-secondary)] text-sm mb-2">Transfer ke:</p>
+                            <p class="font-semibold">Bank BCA</p>
+                            <p class="font-display text-xl text-[var(--accent)]">1234567890</p>
+                            <p class="text-[var(--text-secondary)]">a.n. NEXUS Gaming</p>
+                        </div>
+                        <div class="bg-[var(--bg-secondary)] rounded-lg p-4 mb-4">
+                            <p class="text-[var(--text-secondary)] text-sm mb-2">Atau QRIS:</p>
+                            <div class="bg-white p-4 rounded-lg inline-block">
+                                <svg class="w-32 h-32" viewBox="0 0 100 100">
+                                    <rect fill="#000" x="10" y="10" width="20" height="20"/>
+                                    <rect fill="#000" x="35" y="10" width="10" height="10"/>
+                                    <rect fill="#000" x="50" y="10" width="10" height="10"/>
+                                    <rect fill="#000" x="70" y="10" width="20" height="20"/>
+                                    <rect fill="#000" x="10" y="35" width="10" height="10"/>
+                                    <rect fill="#000" x="30" y="35" width="20" height="20"/>
+                                    <rect fill="#000" x="60" y="35" width="10" height="10"/>
+                                    <rect fill="#000" x="10" y="50" width="20" height="10"/>
+                                    <rect fill="#000" x="40" y="50" width="20" height="20"/>
+                                    <rect fill="#000" x="70" y="50" width="20" height="10"/>
+                                    <rect fill="#000" x="10" y="70" width="20" height="20"/>
+                                    <rect fill="#000" x="35" y="70" width="10" height="10"/>
+                                    <rect fill="#000" x="55" y="70" width="10" height="10"/>
+                                    <rect fill="#000" x="70" y="70" width="20" height="20"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <p class="text-sm text-[var(--text-secondary)]">
+                            Setelah transfer, saldo akan dikonfirmasi oleh developer dalam 1x24 jam.
+                        </p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Developer Dashboard -->
+        <div id="devDashboard" class="hidden">
+            <nav class="sticky top-0 z-50 backdrop-blur-xl bg-[var(--bg-primary)]/80 border-b border-[var(--border)]">
+                <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+                    <div>
+                        <h1 class="font-display text-xl font-bold text-[var(--accent)]">NEXUS</h1>
+                        <p class="text-xs text-[var(--text-secondary)]">Developer Panel</p>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <span class="text-[var(--text-secondary)]" id="devName">Developer</span>
+                        <button onclick="devLogout()" class="btn-danger text-sm py-2 px-4">Keluar</button>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="max-w-7xl mx-auto px-4 py-8">
+                <!-- Dev Stats -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                    <div class="card p-4 text-center">
+                        <p class="text-[var(--text-secondary)] text-sm">Total Users</p>
+                        <p class="font-display text-2xl font-bold text-[var(--accent)]" id="devTotalUsers">0</p>
+                    </div>
+                    <div class="card p-4 text-center">
+                        <p class="text-[var(--text-secondary)] text-sm">Pending Deposit</p>
+                        <p class="font-display text-2xl font-bold text-[var(--warning)]" id="devPendingDeposit">0</p>
+                    </div>
+                    <div class="card p-4 text-center">
+                        <p class="text-[var(--text-secondary)] text-sm">Total Saldo Terpakai</p>
+                        <p class="font-display text-2xl font-bold text-[var(--accent)]" id="devTotalUsed">Rp 0</p>
+                    </div>
+                    <div class="card p-4 text-center">
+                        <p class="text-[var(--text-secondary)] text-sm">Total Transaksi</p>
+                        <p class="font-display text-2xl font-bold text-[var(--accent)]" id="devTotalTx">0</p>
+                    </div>
+                </div>
+
+                <!-- Tabs -->
+                <div class="flex border-b border-[var(--border)] mb-6">
+                    <button class="tab-btn active" onclick="switchDevTab('deposit')">Permintaan Deposit</button>
+                    <button class="tab-btn" onclick="switchDevTab('users')">Daftar User</button>
+                    <button class="tab-btn" onclick="switchDevTab('transactions')">Semua Transaksi</button>
+                </div>
+
+                <!-- Deposit Requests -->
+                <div id="devDepositTab" class="space-y-4"></div>
+
+                <!-- Users List -->
+                <div id="devUsersTab" class="hidden space-y-4"></div>
+
+                <!-- All Transactions -->
+                <div id="devTransactionsTab" class="hidden space-y-4"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Up Modal -->
+    <div id="topupModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="font-display text-xl font-bold">Top Up <span id="modalGameName">Game</span></h3>
+                <button onclick="closeModal('topupModal')" class="text-[var(--text-secondary)] hover:text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+
+            <form id="topupForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium mb-2 text-[var(--text-secondary)]">ID Game / Username Game</label>
+                    <input type="text" id="gameId" class="input-field" placeholder="Masukkan ID atau username game" required>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium mb-2 text-[var(--text-secondary)]">Server ID (jika ada)</label>
+                    <input type="text" id="serverId" class="input-field" placeholder="Opsional">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium mb-2 text-[var(--text-secondary)]">Pilih Item</label>
+                    <select id="itemSelect" class="input-field" required>
+                        <option value="">Pilih item</option>
+                    </select>
+                </div>
+
+                <div class="bg-[var(--bg-secondary)] rounded-lg p-4">
+                    <div class="flex justify-between mb-2">
+                        <span class="text-[var(--text-secondary)]">Harga</span>
+                        <span id="itemPrice" class="font-semibold">Rp 0</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-[var(--text-secondary)]">Saldo Anda</span>
+                        <span id="userBalanceModal" class="font-semibold text-[var(--accent)]">Rp 0</span>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-primary w-full">Proses Top Up</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Developer Login Modal -->
+    <div id="devLoginModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="font-display text-xl font-bold">Login Developer</h3>
+                <button onclick="closeModal('devLoginModal')" class="text-[var(--text-secondary)] hover:text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+
+            <form id="devLoginForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium mb-2 text-[var(--text-secondary)]">Username</label>
+                    <input type="text" id="devUsername" class="input-field" placeholder="Username developer" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-2 text-[var(--text-secondary)]">Password</label>
+                    <input type="password" id="devPassword" class="input-field" placeholder="Password developer" required>
+                </div>
+                <button type="submit" class="btn-primary w-full">Masuk</button>
+            </form>
+            <p class="text-center text-sm text-[var(--text-secondary)] mt-4">
+                Default: admin / admin123
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // ==================== DATA INITIALIZATION ====================
+        const GAMES = [
+            { id: 1, name: 'Mobile Legends', image: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400&h=300&fit=crop', items: [
+                { id: 1, name: '86 Diamonds', price: 20000 },
+                { id: 2, name: '172 Diamonds', price: 39000 },
+                { id: 3, name: '257 Diamonds', price: 58000 },
+                { id: 4, name: '344 Diamonds', price: 76000 },
+                { id: 5, name: '429 Diamonds', price: 95000 },
+                { id: 6, name: '514 Diamonds', price: 113000 },
+                { id: 7, name: '706 Diamonds', price: 153000 },
+                { id: 8, name: '878 Diamonds', price: 190000 },
+            ]},
+            { id: 2, name: 'Free Fire', image: 'https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=400&h=300&fit=crop', items: [
+                { id: 1, name: '50 Diamonds', price: 7500 },
+                { id: 2, name: '100 Diamonds', price: 15000 },
+                { id: 3, name: '210 Diamonds', price: 30000 },
+                { id: 4, name: '355 Diamonds', price: 50000 },
+                { id: 5, name: '720 Diamonds', price: 100000 },
+                { id: 6, name: '1450 Diamonds', price: 200000 },
+            ]},
+            { id: 3, name: 'PUBG Mobile', image: 'https://images.unsplash.com/photo-1560253023-3ec5d502959f?w=400&h=300&fit=crop', items: [
+                { id: 1, name: '60 UC', price: 15000 },
+                { id: 2, name: '325 UC', price: 75000 },
+                { id: 3, name: '660 UC', price: 150000 },
+                { id: 4, name: '1800 UC', price: 400000 },
+                { id: 5, name: '3850 UC', price: 800000 },
+            ]},
+            { id: 4, name: 'Genshin Impact', image: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=400&h=300&fit=crop', items: [
+                { id: 1, name: '60 Genesis Crystals', price: 16000 },
+                { id: 2, name: '300 Genesis Crystals', price: 79000 },
+                { id: 3, name: '980 Genesis Crystals', price: 249000 },
+                { id: 4, name: '1980 Genesis Crystals', price: 499000 },
+                { id: 5, name: '3280 Genesis Crystals', price: 799000 },
+            ]},
+            { id: 5, name: 'Valorant', image: 'https://images.unsplash.com/photo-1552820728-8b83bb6b2b0b?w=400&h=300&fit=crop', items: [
+                { id: 1, name: '125 VP', price: 15000 },
+                { id: 2, name: '420 VP', price: 50000 },
+                { id: 3, name: '700 VP', price: 80000 },
+                { id: 4, name: '1375 VP', price: 150000 },
+                { id: 5, name: '2400 VP', price: 250000 },
+            ]},
+            { id: 6, name: 'Honor of Kings', image: 'https://images.unsplash.com/photo-1493711662062-fa541f7f3d24?w=400&h=300&fit=crop', items: [
+                { id: 1, name: '50 Tokens', price: 10000 },
+                { id: 2, name: '100 Tokens', price: 20000 },
+                { id: 3, name: '250 Tokens', price: 48000 },
+                { id: 4, name: '500 Tokens', price: 95000 },
+            ]},
+            { id: 7, name: 'Clash of Clans', image: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=400&h=300&fit=crop', items: [
+                { id: 1, name: '80 Gems', price: 16000 },
+                { id: 2, name: '500 Gems', price: 79000 },
+                { id: 3, name: '1200 Gems', price: 159000 },
+                { id: 4, name: '2500 Gems', price: 319000 },
+            ]},
+            { id: 8, name: 'Clash Royale', image: 'https://images.unsplash.com/photo-1511882150382-421056c89033?w=400&h=300&fit=crop', items: [
+                { id: 1, name: '80 Gems', price: 16000 },
+                { id: 2, name: '500 Gems', price: 79000 },
+                { id: 3, name: '1200 Gems', price: 159000 },
+            ]},
+        ];
+
+        const DEPOSIT_AMOUNTS = [50000, 100000, 200000, 500000, 1000000, 2000000];
+
+        const DEVELOPER_ACCOUNT = {
+            username: 'admin',
+            password: 'admin123',
+            name: 'Admin Nexus'
+        };
+
+        // ==================== STATE MANAGEMENT ====================
+        let currentUser = null;
+        let isDeveloper = false;
+        let selectedGame = null;
+        let selectedDepositAmount = 0;
+
+        // ==================== UTILITY FUNCTIONS ====================
+        function formatCurrency(amount) {
+            return 'Rp ' + amount.toLocaleString('id-ID');
+        }
+
+        function generateId() {
+            return Date.now().toString(36) + Math.random().toString(36).substr(2);
+        }
+
+        function formatDate(date) {
+            return new Date(date).toLocaleDateString('id-ID', {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // ==================== LOCAL STORAGE FUNCTIONS ====================
+        function getUsers() {
+            const users = localStorage.getItem('nexus_users');
+            return users ? JSON.parse(users) : [];
+        }
+
+        function saveUsers(users) {
+            localStorage.setItem('nexus_users', JSON.stringify(users));
+        }
+
+        function getCurrentUser() {
+            const session = localStorage.getItem('nexus_session');
+            if (!session) return null;
+            const users = getUsers();
+            return users.find(u => u.id === session) || null;
+        }
+
+        function saveCurrentUser(user) {
+            localStorage.setItem('nexus_session', user.id);
+            currentUser = user;
+        }
+
+        function getTransactions() {
+            const tx = localStorage.getItem('nexus_transactions');
+            return tx ? JSON.parse(tx) : [];
+        }
+
+        function saveTransactions(transactions) {
+            localStorage.setItem('nexus_transactions', JSON.stringify(transactions));
+        }
+
+        function updateUserBalance(userId, amount) {
+            const users = getUsers();
+            const userIndex = users.findIndex(u => u.id === userId);
+            if (userIndex !== -1) {
+                users[userIndex].balance = (users[userIndex].balance || 0) + amount;
+                saveUsers(users);
+                if (currentUser && currentUser.id === userId) {
+                    currentUser = users[userIndex];
+                }
+            }
+        }
+
+        // ==================== TOAST NOTIFICATIONS ====================
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            const icons = {
+                success: '<svg class="w-5 h-5 text-[var(--accent)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>',
+                error: '<svg class="w-5 h-5 text-[var(--danger)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>',
+                warning: '<svg class="w-5 h-5 text-[var(--warning)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>'
+            };
+
+            toast.innerHTML = `${icons[type]}<span>${message}</span>`;
+            container.appendChild(toast);
+
+            setTimeout(() => toast.classList.add('show'), 100);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 400);
+            }, 4000);
+        }
+
+        // ==================== AUTH FUNCTIONS ====================
+        function switchAuthTab(tab) {
+            const tabs = document.querySelectorAll('.tab-btn');
+            tabs.forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+
+            document.getElementById('loginForm').classList.toggle('hidden', tab !== 'login');
+            document.getElementById('registerForm').classList.toggle('hidden', tab !== 'register');
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value;
+
+            const users = getUsers();
+            const user = users.find(u => u.username === username && u.password === password);
+
+            if (user) {
+                saveCurrentUser(user);
+                showToast('Login berhasil! Selamat datang ' + user.username);
+                showDashboard();
+            } else {
+                showToast('Username atau password salah', 'error');
+            }
+        });
+
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('regUsername').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const password = document.getElementById('regPassword').value;
+
+            const users = getUsers();
+            
+            if (users.find(u => u.username === username)) {
+                showToast('Username sudah digunakan', 'error');
+                return;
+            }
+
+            if (users.find(u => u.email === email)) {
+                showToast('Email sudah terdaftar', 'error');
+                return;
+            }
+
+            const newUser = {
+                id: generateId(),
+                username,
+                email,
+                password,
+                balance: 0,
+                createdAt: new Date().toISOString()
+            };
+
+            users.push(newUser);
+            saveUsers(users);
+            saveCurrentUser(newUser);
+            
+            showToast('Registrasi berhasil! Selamat datang ' + username);
+            showDashboard();
+        });
+
+        function logout() {
+            localStorage.removeItem('nexus_session');
+            currentUser = null;
+            document.getElementById('authScreen').classList.remove('hidden');
+            document.getElementById('dashboardScreen').classList.add('hidden');
+            document.getElementById('userMenu').classList.add('hidden');
+            showToast('Berhasil keluar', 'success');
+        }
+
+        function toggleUserMenu() {
+            document.getElementById('userMenu').classList.toggle('hidden');
+        }
+
+        function toggleMobileMenu() {
+            document.getElementById('mobileMenu').classList.toggle('hidden');
+        }
+
+        // ==================== DASHBOARD FUNCTIONS ====================
+        function showDashboard() {
+            document.getElementById('authScreen').classList.add('hidden');
+            document.getElementById('dashboardScreen').classList.remove('hidden');
+            document.getElementById('devDashboard').classList.add('hidden');
+            isDeveloper = false;
+            
+            updateUI();
+            renderGames();
+            renderDepositAmounts();
+            renderTransactions();
+            
+            // Trigger animations
+            setTimeout(() => {
+                document.querySelectorAll('.fade-in').forEach(el => el.classList.add('visible'));
+            }, 100);
+        }
+
+        function updateUI() {
+            if (!currentUser) return;
+
+            document.getElementById('userName').textContent = currentUser.username;
+            document.getElementById('userAvatar').textContent = currentUser.username.charAt(0).toUpperCase();
+            document.getElementById('menuUserEmail').textContent = currentUser.email;
+            document.getElementById('welcomeName').textContent = currentUser.username;
+            document.getElementById('navBalance').textContent = formatCurrency(currentUser.balance || 0);
+            document.getElementById('mainBalance').textContent = formatCurrency(currentUser.balance || 0);
+            document.getElementById('userBalanceModal').textContent = formatCurrency(currentUser.balance || 0);
+
+            // Stats
+            const transactions = getTransactions().filter(t => t.userId === currentUser.id && t.type === 'topup');
+            document.getElementById('totalTransactions').textContent = transactions.length;
+            
+            const totalTopup = transactions.reduce((sum, t) => sum + t.amount, 0);
+            document.getElementById('totalTopup').textContent = formatCurrency(totalTopup);
+
+            const memberSince = new Date(currentUser.createdAt);
+            document.getElementById('memberSince').textContent = memberSince.toLocaleDateString('id-ID', { month: 'short', year: 'numeric' });
+        }
+
+        function showSection(section) {
+            const sections = ['home', 'games', 'history', 'deposit'];
+            sections.forEach(s => {
+                document.getElementById(s + 'Section').classList.toggle('hidden', s !== section);
+            });
+
+            // Update nav links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+                if (link.textContent.toLowerCase().includes(section === 'home' ? 'beranda' : section === 'history' ? 'riwayat' : section === 'deposit' ? 'saldo' : section)) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        // ==================== GAMES FUNCTIONS ====================
+        function renderGames() {
+            const popularContainer = document.getElementById('popularGames');
+            const allContainer = document.getElementById('allGames');
+
+            const gameHTML = GAMES.map(game => `
+                <div class="game-card" onclick="openTopupModal(${game.id})">
+                    <div class="overflow-hidden">
+                        <img src="${game.image}" alt="${game.name}" loading="lazy">
+                    </div>
+                    <div class="p-4">
+                        <h4 class="font-semibold text-sm md:text-base">${game.name}</h4>
+                        <p class="text-xs text-[var(--text-secondary)] mt-1">Mulai ${formatCurrency(game.items[0].price)}</p>
+                    </div>
+                </div>
+            `).join('');
+
+            popularContainer.innerHTML = gameHTML;
+            allContainer.innerHTML = gameHTML;
+        }
+
+        function openTopupModal(gameId) {
+            selectedGame = GAMES.find(g => g.id === gameId);
+            if (!selectedGame) return;
+
+            document.getElementById('modalGameName').textContent = selectedGame.name;
+            
+            const itemSelect = document.getElementById('itemSelect');
+            itemSelect.innerHTML = '<option value="">Pilih item</option>' + 
+                selectedGame.items.map(item => 
+                    `<option value="${item.id}" data-price="${item.price}">${item.name} - ${formatCurrency(item.price)}</option>`
+                ).join('');
+
+            document.getElementById('itemPrice').textContent = 'Rp 0';
+            document.getElementById('userBalanceModal').textContent = formatCurrency(currentUser.balance || 0);
+            document.getElementById('topupModal').classList.add('active');
+
+            itemSelect.onchange = function() {
+                const selected = this.options[this.selectedIndex];
+                const price = selected.dataset.price || 0;
+                document.getElementById('itemPrice').textContent = formatCurrency(parseInt(price));
+            };
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        document.getElementById('topupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const gameIdInput = document.getElementById('gameId').value.trim();
+            const serverId = document.getElementById('serverId').value.trim();
+            const itemSelect = document.getElementById('itemSelect');
+            const selectedOption = itemSelect.options[itemSelect.selectedIndex];
+            const price = parseInt(selectedOption.dataset.price) || 0;
+
+            if (!gameIdInput) {
+                showToast('Masukkan ID Game', 'error');
+                return;
+            }
+
+            if (!price) {
+                showToast('Pilih item terlebih dahulu', 'error');
+                return;
+            }
+
+            if ((currentUser.balance || 0) < price) {
+                showToast('Saldo tidak mencukupi. Silakan isi saldo terlebih dahulu.', 'error');
+                return;
+            }
+
+            // Process top up
+            const transaction = {
+                id: generateId(),
+                userId: currentUser.id,
+                username: currentUser.username,
+                type: 'topup',
+                gameName: selectedGame.name,
+                itemId: selectedOption.value,
+                itemName: selectedOption.textContent.split(' - ')[0],
+                gameId: gameIdInput,
+                serverId: serverId,
+                amount: price,
+                status: 'success',
+                createdAt: new Date().toISOString()
+            };
+
+            const transactions = getTransactions();
+            transactions.unshift(transaction);
+            saveTransactions(transactions);
+
+            // Deduct balance
+            updateUserBalance(currentUser.id, -price);
+            currentUser = getCurrentUser();
+            updateUI();
+            renderTransactions();
+
+            closeModal('topupModal');
+            showToast('Top up berhasil! ' + transaction.itemName + ' akan segera masuk.');
+
+            // Reset form
+            document.getElementById('topupForm').reset();
+            document.getElementById('itemPrice').textContent = 'Rp 0';
+        });
+
+        // ==================== DEPOSIT FUNCTIONS ====================
+        function renderDepositAmounts() {
+            const container = document.getElementById('depositAmounts');
+            container.innerHTML = DEPOSIT_AMOUNTS.map(amount => `
+                <button type="button" class="deposit-amount-btn p-4 bg-[var(--bg-secondary)] border border-[var(--border)] rounded-lg hover:border-[var(--accent)] transition-all text-center" onclick="selectDepositAmount(${amount})">
+                    <span class="font-semibold">${formatCurrency(amount)}</span>
+                </button>
+            `).join('');
+        }
+
+        function selectDepositAmount(amount) {
+            selectedDepositAmount = amount;
+            document.querySelectorAll('.deposit-amount-btn').forEach(btn => {
+                btn.classList.remove('border-[var(--accent)]', 'bg-[rgba(0,212,170,0.1)]');
+                if (btn.textContent.includes(formatCurrency(amount))) {
+                    btn.classList.add('border-[var(--accent)]', 'bg-[rgba(0,212,170,0.1)]');
+                }
+            });
+            document.getElementById('customDeposit').value = amount;
+        }
+
+        function requestDeposit() {
+            const customAmount = parseInt(document.getElementById('customDeposit').value) || selectedDepositAmount;
+            
+            if (!customAmount || customAmount < 10000) {
+                showToast('Minimal deposit Rp 10.000', 'error');
+                return;
+            }
+
+            const transaction = {
+                id: generateId(),
+                userId: currentUser.id,
+                username: currentUser.username,
+                type: 'deposit',
+                amount: customAmount,
+                status: 'pending',
+                createdAt: new Date().toISOString()
+            };
+
+            const transactions = getTransactions();
+            transactions.unshift(transaction);
+            saveTransactions(transactions);
+
+            renderTransactions();
+            showToast('Permintaan deposit berhasil diajukan! Silakan transfer dan tunggu konfirmasi developer.', 'success');
+            
+            document.getElementById('customDeposit').value = '';
+            selectedDepositAmount = 0;
+            document.querySelectorAll('.deposit-amount-btn').forEach(btn => {
+                btn.classList.remove('border-[var(--accent)]', 'bg-[rgba(0,212,170,0.1)]');
+            });
+        }
+
+        // ==================== TRANSACTIONS FUNCTIONS ====================
+        function renderTransactions() {
+            const container = document.getElementById('transactionList');
+            const transactions = getTransactions().filter(t => t.userId === currentUser.id);
+
+            if (transactions.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12 text-[var(--text-secondary)]">
+                        <svg class="w-16 h-16 mx-auto mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                        </svg>
+                        <p>Belum ada transaksi</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = transactions.map(tx => `
+                <div class="transaction-item">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="font-semibold">${tx.type === 'deposit' ? 'Isi Saldo' : 'Top Up ' + tx.gameName}</p>
+                            <p class="text-sm text-[var(--text-secondary)]">${tx.type === 'topup' ? tx.itemName + ' - ' + tx.gameId : 'Deposit Saldo'}</p>
+                            <p class="text-xs text-[var(--text-secondary)] mt-1">${formatDate(tx.createdAt)}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-semibold ${tx.type === 'deposit' ? 'text-[var(--accent)]' : 'text-[var(--danger)]'}">
+                                ${tx.type === 'deposit' ? '+' : '-'}${formatCurrency(tx.amount)}
+                            </p>
+                            <span class="badge badge-${tx.status}">${tx.status === 'pending' ? 'Menunggu' : tx.status === 'success' ? 'Berhasil' : 'Gagal'}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ==================== DEVELOPER FUNCTIONS ====================
+        function openDevLogin() {
+            document.getElementById('devLoginModal').classList.add('active');
+        }
+
+        document.getElementById('devLoginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('devUsername').value.trim();
+            const password = document.getElementById('devPassword').value;
+
+            if (username === DEVELOPER_ACCOUNT.username && password === DEVELOPER_ACCOUNT.password) {
+                isDeveloper = true;
+                closeModal('devLoginModal');
+                showDevDashboard();
+                showToast('Login developer berhasil!');
+            } else {
+                showToast('Kredensial developer salah', 'error');
+            }
+        });
+
+        function showDevDashboard() {
+            document.getElementById('authScreen').classList.add('hidden');
+            document.getElementById('dashboardScreen').classList.add('hidden');
+            document.getElementById('devDashboard').classList.remove('hidden');
+            
+            document.getElementById('devName').textContent = DEVELOPER_ACCOUNT.name;
+            
+            updateDevStats();
+            renderDevDeposits();
+            renderDevUsers();
+            renderDevTransactions();
+        }
+
+        function devLogout() {
+            isDeveloper = false;
+            document.getElementById('devDashboard').classList.add('hidden');
+            document.getElementById('authScreen').classList.remove('hidden');
+            showToast('Berhasil keluar dari panel developer');
+        }
+
+        function switchDevTab(tab) {
+            const tabs = document.querySelectorAll('#devDashboard .tab-btn');
+            tabs.forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+
+            document.getElementById('devDepositTab').classList.toggle('hidden', tab !== 'deposit');
+            document.getElementById('devUsersTab').classList.toggle('hidden', tab !== 'users');
+            document.getElementById('devTransactionsTab').classList.toggle('hidden', tab !== 'transactions');
+        }
+
+        function updateDevStats() {
+            const users = getUsers();
+            const transactions = getTransactions();
+            const pendingDeposits = transactions.filter(t => t.type === 'deposit' && t.status === 'pending');
+            const totalUsed = transactions.filter(t => t.type === 'topup' && t.status === 'success').reduce((sum, t) => sum + t.amount, 0);
+
+            document.getElementById('devTotalUsers').textContent = users.length;
+            document.getElementById('devPendingDeposit').textContent = pendingDeposits.length;
+            document.getElementById('devTotalUsed').textContent = formatCurrency(totalUsed);
+            document.getElementById('devTotalTx').textContent = transactions.length;
+        }
+
+        function renderDevDeposits() {
+            const container = document.getElementById('devDepositTab');
+            const transactions = getTransactions().filter(t => t.type === 'deposit');
+
+            if (transactions.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12 text-[var(--text-secondary)]">
+                        <p>Tidak ada permintaan deposit</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = transactions.map(tx => `
+                <div class="transaction-item">
+                    <div class="flex flex-col md:flex-row justify-between md:items-center gap-4">
+                        <div>
+                            <p class="font-semibold">${tx.username}</p>
+                            <p class="text-sm text-[var(--text-secondary)]">ID: ${tx.userId}</p>
+                            <p class="text-xs text-[var(--text-secondary)] mt-1">${formatDate(tx.createdAt)}</p>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <p class="font-semibold text-[var(--accent)] text-lg">+${formatCurrency(tx.amount)}</p>
+                            <span class="badge badge-${tx.status}">${tx.status === 'pending' ? 'Menunggu' : tx.status === 'success' ? 'Berhasil' : 'Gagal'}</span>
+                            ${tx.status === 'pending' ? `
+                                <div class="flex gap-2">
+                                    <button onclick="confirmDeposit('${tx.id}')" class="btn-primary text-sm py-2 px-4">Konfirmasi</button>
+                                    <button onclick="rejectDeposit('${tx.id}')" class="btn-danger text-sm py-2 px-4">Tolak</button>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderDevUsers() {
+            const container = document.getElementById('devUsersTab');
+            const users = getUsers();
+
+            if (users.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12 text-[var(--text-secondary)]">
+                        <p>Tidak ada user terdaftar</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = users.map(user => `
+                <div class="transaction-item">
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--accent)] to-[#00b4d8] flex items-center justify-center font-bold text-[var(--bg-primary)]">
+                                ${user.username.charAt(0).toUpperCase()}
+                            </div>
+                            <div>
+                                <p class="font-semibold">${user.username}</p>
+                                <p class="text-sm text-[var(--text-secondary)]">${user.email}</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-semibold text-[var(--accent)]">${formatCurrency(user.balance || 0)}</p>
+                            <p class="text-xs text-[var(--text-secondary)]">Bergabung: ${new Date(user.createdAt).toLocaleDateString('id-ID')}</p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderDevTransactions() {
+            const container = document.getElementById('devTransactionsTab');
+            const transactions = getTransactions();
+
+            if (transactions.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12 text-[var(--text-secondary)]">
+                        <p>Tidak ada transaksi</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = transactions.map(tx => `
+                <div class="transaction-item">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="font-semibold">${tx.username} - ${tx.type === 'deposit' ? 'Deposit' : 'Top Up ' + tx.gameName}</p>
+                            <p class="text-sm text-[var(--text-secondary)]">${tx.type === 'topup' ? tx.itemName + ' - ID: ' + tx.gameId : 'Isi Saldo'}</p>
+                            <p class="text-xs text-[var(--text-secondary)] mt-1">${formatDate(tx.createdAt)}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-semibold ${tx.type === 'deposit' ? 'text-[var(--accent)]' : 'text-[var(--danger)]'}">
+                                ${tx.type === 'deposit' ? '+' : '-'}${formatCurrency(tx.amount)}
+                            </p>
+                            <span class="badge badge-${tx.status}">${tx.status === 'pending' ? 'Menunggu' : tx.status === 'success' ? 'Berhasil' : 'Gagal'}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function confirmDeposit(txId) {
+            const transactions = getTransactions();
+            const txIndex = transactions.findIndex(t => t.id === txId);
+            
+            if (txIndex !== -1 && transactions[txIndex].status === 'pending') {
+                transactions[txIndex].status = 'success';
+                saveTransactions(transactions);
+                
+                // Add balance to user
+                updateUserBalance(transactions[txIndex].userId, transactions[txIndex].amount);
+                
+                updateDevStats();
+                renderDevDeposits();
+                showToast('Deposit berhasil dikonfirmasi! Saldo telah ditambahkan ke user.');
+            }
+        }
+
+        function rejectDeposit(txId) {
+            const transactions = getTransactions();
+            const txIndex = transactions.findIndex(t => t.id === txId);
+            
+            if (txIndex !== -1 && transactions[txIndex].status === 'pending') {
+                transactions[txIndex].status = 'failed';
+                saveTransactions(transactions);
+                
+                updateDevStats();
+                renderDevDeposits();
+                showToast('Deposit ditolak.', 'warning');
+            }
+        }
+
+        // ==================== PARTICLES ====================
+        function createParticles() {
+            const container = document.getElementById('particles');
+            const particleCount = 20;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        // ==================== INITIALIZATION ====================
+        function init() {
+            createParticles();
+            
+            // Check for existing session
+            const session = localStorage.getItem('nexus_session');
+            const devSession = localStorage.getItem('nexus_dev_session');
+            
+            if (devSession === 'true') {
+                isDeveloper = true;
+                showDevDashboard();
+            } else if (session) {
+                currentUser = getCurrentUser();
+                if (currentUser) {
+                    showDashboard();
+                } else {
+                    localStorage.removeItem('nexus_session');
+                }
+            }
+
+            // Animate fade-in elements
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+        }
+
+        // Close menus on outside click
+        document.addEventListener('click', function(e) {
+            const userMenu = document.getElementById('userMenu');
+            const userMenuBtn = userMenu?.previousElementSibling;
+            
+            if (userMenu && !userMenu.contains(e.target) && !userMenuBtn?.contains(e.target)) {
+                userMenu.classList.add('hidden');
+            }
+        });
+
+        // Close modal on overlay click
+        document.querySelectorAll('.modal-overlay').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('active');
+                }
+            });
+        });
+
+        // Initialize app
+        init();
+    </script>
+</body>
+</html>        .btn-secondary {
             background: transparent;
             color: var(--text-primary);
             font-weight: 500;
