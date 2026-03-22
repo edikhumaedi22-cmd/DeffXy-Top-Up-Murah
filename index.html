@@ -896,8 +896,8 @@
 
         // TELEGRAM INTEGRATION
         function sendToTelegram(transaction) {
-            const botToken = localStorage.getItem('7334976291:AAEOf0ppLNPYjOF98NC7ceZtMfXPWZ1X-WE');
-            const chatId = localStorage.getItem('7223902938');
+            const botToken = localStorage.getItem('telegram_bot_token');
+            const chatId = localStorage.getItem('telegram_chat_id');
 
             if (!botToken || !chatId) {
                 console.warn('Telegram Bot Token atau Chat ID belum disimpan di panel developer.');
@@ -965,4 +965,4 @@
         document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closeReceiptModal(); if (document.getElementById('sidebar').classList.contains('active')) toggleSidebar(); } });
     </script>
 </body>
-                        </html>
+    </html>
