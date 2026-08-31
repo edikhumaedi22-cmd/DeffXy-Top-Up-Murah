@@ -1,533 +1,555 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tech Animation - Futuristic Website</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>⚠️ DEVICE KILLER - Stress Test</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  body {
+    background: #000;
+    overflow: hidden;
+    font-family: 'Courier New', monospace;
+    color: #0f0;
+  }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #0a0a0a;
-            overflow-x: hidden;
-            color: #fff;
-        }
+  #warning {
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255,0,0,0.8);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 5px;
+    z-index: 9999;
+    font-size: 12px;
+    animation: blink 0.5s infinite;
+  }
 
-        /* Animated Background */
-        .tech-background {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0f0f23 100%);
-            z-index: -2;
-        }
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
 
-        /* Circuit Board Pattern */
-        .circuit-board {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(0deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
-            background-size: 50px 50px;
-            z-index: -1;
-            animation: circuitMove 20s linear infinite;
-        }
+  canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
 
-        @keyframes circuitMove {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(50px, 50px); }
-        }
+  #canvas1 { z-index: 1; }
+  #canvas2 { z-index: 2; mix-blend-mode: screen; }
+  #canvas3 { z-index: 3; mix-blend-mode: lighten; }
 
-        /* Canvas for Particles */
-        #particleCanvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-        }
+  .dom-storm {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 4;
+    pointer-events: none;
+  }
 
-        /* Floating Geometric Shapes */
-        .shapes-container {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            z-index: -1;
-            pointer-events: none;
-        }
+  .dom-element {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    animation: crazySpin 0.3s linear infinite, 
+               crazyMove 2s ease-in-out infinite alternate,
+               crazyScale 0.5s ease-in-out infinite alternate,
+               crazyColor 0.1s linear infinite;
+    filter: blur(1px) drop-shadow(0 0 10px currentColor);
+  }
 
-        .geo-shape {
-            position: absolute;
-            opacity: 0.6;
-            animation: float 15s infinite ease-in-out;
-        }
+  @keyframes crazySpin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
 
-        .cube {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, #00ffff, #0080ff);
-            transform-style: preserve-3d;
-            animation: rotateCube 10s infinite linear, float 8s infinite ease-in-out;
-            box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
-        }
+  @keyframes crazyMove {
+    0% { margin-left: 0; margin-top: 0; }
+    100% { margin-left: 100px; margin-top: 100px; }
+  }
 
-        .pyramid {
-            width: 0;
-            height: 0;
-            border-left: 40px solid transparent;
-            border-right: 40px solid transparent;
-            border-bottom: 70px solid rgba(138, 43, 226, 0.6);
-            animation: float 12s infinite ease-in-out, pulse 3s infinite;
-            filter: drop-shadow(0 0 20px rgba(138, 43, 226, 0.8));
-        }
+  @keyframes crazyScale {
+    0% { transform: scale(1) rotate(0deg); }
+    100% { transform: scale(3) rotate(720deg); }
+  }
 
-        .sphere {
-            width: 50px;
-            height: 50px;
-            background: radial-gradient(circle at 30% 30%, #00ffff, #0080ff, #0000ff);
-            border-radius: 50%;
-            animation: float 10s infinite ease-in-out, glow 2s infinite alternate;
-            box-shadow: 0 0 40px rgba(0, 255, 255, 0.8);
-        }
+  @keyframes crazyColor {
+    0% { color: #ff0000; background: #ff0000; }
+    25% { color: #00ff00; background: #00ff00; }
+    50% { color: #0000ff; background: #0000ff; }
+    75% { color: #ffff00; background: #ffff00; }
+    100% { color: #ff00ff; background: #ff00ff; }
+  }
 
-        @keyframes rotateCube {
-            0% { transform: rotateX(0deg) rotateY(0deg); }
-            100% { transform: rotateX(360deg) rotateY(360deg); }
-        }
+  .matrix-rain {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 5;
+    pointer-events: none;
+    font-size: 14px;
+    line-height: 14px;
+    color: #0f0;
+    text-shadow: 0 0 5px #0f0;
+    overflow: hidden;
+    opacity: 0.7;
+  }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            33% { transform: translateY(-30px) rotate(120deg); }
-            66% { transform: translateY(30px) rotate(240deg); }
-        }
+  .glitch-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 6;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      0deg,
+      rgba(0,0,0,0.1) 0px,
+      rgba(0,0,0,0.1) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+    animation: glitchShift 0.1s infinite;
+  }
 
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 0.6; }
-            50% { transform: scale(1.2); opacity: 0.9; }
-        }
+  @keyframes glitchShift {
+    0% { transform: translate(0, 0); }
+    25% { transform: translate(-2px, 1px); }
+    50% { transform: translate(2px, -1px); }
+    75% { transform: translate(-1px, 2px); }
+    100% { transform: translate(1px, -2px); }
+  }
 
-        @keyframes glow {
-            0% { box-shadow: 0 0 20px rgba(0, 255, 255, 0.5); }
-            100% { box-shadow: 0 0 60px rgba(0, 255, 255, 1); }
-        }
+  #stats {
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+    background: rgba(0,0,0,0.8);
+    color: #0f0;
+    padding: 10px;
+    border: 1px solid #0f0;
+    border-radius: 5px;
+    z-index: 9999;
+    font-size: 11px;
+    min-width: 200px;
+  }
 
-        /* Position shapes */
-        .shape1 { top: 10%; left: 10%; animation-delay: 0s; }
-        .shape2 { top: 20%; right: 15%; animation-delay: 2s; }
-        .shape3 { bottom: 20%; left: 15%; animation-delay: 4s; }
-        .shape4 { bottom: 30%; right: 10%; animation-delay: 6s; }
-        .shape5 { top: 50%; left: 5%; animation-delay: 8s; }
-        .shape6 { top: 60%; right: 20%; animation-delay: 10s; }
+  #controls {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    background: rgba(0,0,0,0.8);
+    color: #0f0;
+    padding: 10px;
+    border: 1px solid #f00;
+    border-radius: 5px;
+    z-index: 9999;
+    font-size: 11px;
+  }
 
-        /* Main Content */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 100px 20px;
-            position: relative;
-            z-index: 1;
-        }
+  button {
+    background: #300;
+    color: #f00;
+    border: 1px solid #f00;
+    padding: 5px 10px;
+    margin: 2px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 11px;
+  }
 
-        .hero-section {
-            text-align: center;
-            padding: 100px 20px;
-        }
+  button:hover {
+    background: #f00;
+    color: #000;
+  }
 
-        .hero-title {
-            font-size: 4rem;
-            font-weight: bold;
-            background: linear-gradient(135deg, #00ffff, #8a2be2, #0080ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 20px;
-            animation: titleGlow 3s infinite alternate;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-        }
+  .heavy-filter {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 7;
+    pointer-events: none;
+    backdrop-filter: blur(0.5px) saturate(200%) hue-rotate(0deg);
+    animation: filterCrazy 2s linear infinite;
+  }
 
-        @keyframes titleGlow {
-            0% { filter: drop-shadow(0 0 20px rgba(0, 255, 255, 0.5)); }
-            100% { filter: drop-shadow(0 0 40px rgba(138, 43, 226, 0.8)); }
-        }
-
-        .hero-subtitle {
-            font-size: 1.5rem;
-            color: #a0a0a0;
-            margin-bottom: 40px;
-            animation: fadeInUp 1s ease-out;
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Tech Cards */
-        .tech-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-top: 80px;
-        }
-
-        .tech-card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(0, 255, 255, 0.2);
-            border-radius: 20px;
-            padding: 40px;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .tech-card::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            background: linear-gradient(45deg, #00ffff, #8a2be2, #0080ff);
-            border-radius: 20px;
-            opacity: 0;
-            z-index: -1;
-            transition: opacity 0.3s ease;
-        }
-
-        .tech-card:hover::before {
-            opacity: 1;
-        }
-
-        .tech-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 60px rgba(0, 255, 255, 0.3);
-        }
-
-        .card-icon {
-            font-size: 3rem;
-            margin-bottom: 20px;
-            animation: iconFloat 3s infinite ease-in-out;
-        }
-
-        @keyframes iconFloat {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        .card-title {
-            font-size: 1.8rem;
-            color: #00ffff;
-            margin-bottom: 15px;
-        }
-
-        .card-description {
-            color: #a0a0a0;
-            line-height: 1.6;
-        }
-
-        /* Animated Buttons */
-        .tech-button {
-            display: inline-block;
-            margin-top: 30px;
-            padding: 15px 40px;
-            background: linear-gradient(135deg, #00ffff, #0080ff);
-            color: #000;
-            text-decoration: none;
-            border-radius: 50px;
-            font-weight: bold;
-            font-size: 1.1rem;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
-        }
-
-        .tech-button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .tech-button:hover::before {
-            left: 100%;
-        }
-
-        .tech-button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 10px 40px rgba(0, 255, 255, 0.6);
-        }
-
-        /* Loading Animation */
-        .loading-line {
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 3px;
-            background: linear-gradient(90deg, #00ffff, #8a2be2, #0080ff);
-            animation: loading 2s infinite;
-            z-index: 9999;
-        }
-
-        @keyframes loading {
-            0% { width: 0; left: 0; }
-            50% { width: 100%; left: 0; }
-            100% { width: 0; left: 100%; }
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .hero-title {
-                font-size: 2.5rem;
-            }
-            .hero-subtitle {
-                font-size: 1.2rem;
-            }
-        }
-    </style>
+  @keyframes filterCrazy {
+    0% { backdrop-filter: blur(0.5px) saturate(200%) hue-rotate(0deg); }
+    25% { backdrop-filter: blur(1px) saturate(300%) hue-rotate(90deg); }
+    50% { backdrop-filter: blur(0.5px) saturate(400%) hue-rotate(180deg); }
+    75% { backdrop-filter: blur(1.5px) saturate(300%) hue-rotate(270deg); }
+    100% { backdrop-filter: blur(0.5px) saturate(200%) hue-rotate(360deg); }
+  }
+</style>
 </head>
 <body>
-    <!-- Loading Line -->
-    <div class="loading-line"></div>
 
-    <!-- Background -->
-    <div class="tech-background"></div>
-    <div class="circuit-board"></div>
+<div id="warning">⚠️ STRESS TEST - HP BISA CRASH! ⚠️</div>
 
-    <!-- Particle Canvas -->
-    <canvas id="particleCanvas"></canvas>
+<canvas id="canvas1"></canvas>
+<canvas id="canvas2"></canvas>
+<canvas id="canvas3"></canvas>
 
-    <!-- Floating Shapes -->
-    <div class="shapes-container">
-        <div class="geo-shape cube shape1"></div>
-        <div class="geo-shape pyramid shape2"></div>
-        <div class="geo-shape sphere shape3"></div>
-        <div class="geo-shape cube shape4"></div>
-        <div class="geo-shape pyramid shape5"></div>
-        <div class="geo-shape sphere shape6"></div>
-    </div>
+<div class="dom-storm" id="domStorm"></div>
+<div class="matrix-rain" id="matrixRain"></div>
+<div class="glitch-overlay"></div>
+<div class="heavy-filter"></div>
 
-    <!-- Main Content -->
-    <div class="container">
-        <section class="hero-section">
-            <h1 class="hero-title">Future Technology</h1>
-            <p class="hero-subtitle">Experience the Next Generation of Digital Innovation</p>
-            <a href="#" class="tech-button">Explore Now</a>
-        </section>
+<div id="stats">
+  <div>FPS: <span id="fps">0</span></div>
+  <div>Particles: <span id="particleCount">0</span></div>
+  <div>DOM Elements: <span id="domCount">0</span></div>
+  <div>Memory: <span id="memUsage">N/A</span></div>
+  <div>Intensity: <span id="intensity">1</span>x</div>
+</div>
 
-        <div class="tech-cards">
-            <div class="tech-card">
-                <div class="card-icon">🤖</div>
-                <h3 class="card-title">Artificial Intelligence</h3>
-                <p class="card-description">Advanced AI algorithms that power intelligent systems and machine learning solutions for the future.</p>
-            </div>
+<div id="controls">
+  <div style="margin-bottom:5px; color:#f00;">⚡ KONTROL BENCANA ⚡</div>
+  <button onclick="addMoreParticles()">+ Particles</button>
+  <button onclick="addMoreDOM()">+ DOM Elements</button>
+  <button onclick="maxChaos()">☠️ MAX CHAOS</button>
+  <button onclick="resetAll()">🔄 Reset</button>
+</div>
 
-            <div class="tech-card">
-                <div class="card-icon">🔗</div>
-                <h3 class="card-title">Blockchain</h3>
-                <p class="card-description">Decentralized technology ensuring secure, transparent, and immutable digital transactions.</p>
-            </div>
+<script>
+// ============ CONFIGURATION ============
+let CONFIG = {
+  particleCount: 2000,
+  domElements: 500,
+  matrixColumns: 100,
+  intensity: 1,
+  running: true
+};
 
-            <div class="tech-card">
-                <div class="card-icon">☁️</div>
-                <h3 class="card-title">Cloud Computing</h3>
-                <p class="card-description">Scalable cloud infrastructure providing powerful computing resources on demand.</p>
-            </div>
+// ============ CANVAS PARTICLE SYSTEM ============
+const canvases = [
+  document.getElementById('canvas1'),
+  document.getElementById('canvas2'),
+  document.getElementById('canvas3')
+];
 
-            <div class="tech-card">
-                <div class="card-icon">🔮</div>
-                <h3 class="card-title">Quantum Computing</h3>
-                <p class="card-description">Next-generation computing harnessing quantum mechanics for unprecedented processing power.</p>
-            </div>
+const contexts = canvases.map(c => c.getContext('2d'));
 
-            <div class="tech-card">
-                <div class="card-icon">🌐</div>
-                <h3 class="card-title">IoT Network</h3>
-                <p class="card-description">Connected devices creating intelligent ecosystems for smart living and automation.</p>
-            </div>
+function resizeCanvases() {
+  canvases.forEach(c => {
+    c.width = window.innerWidth;
+    c.height = window.innerHeight;
+  });
+}
+resizeCanvases();
+window.addEventListener('resize', resizeCanvases);
 
-            <div class="tech-card">
-                <div class="card-icon">🛡️</div>
-                <h3 class="card-title">Cyber Security</h3>
-                <p class="card-description">Advanced protection systems safeguarding your digital assets and privacy.</p>
-            </div>
-        </div>
-    </div>
+class Particle {
+  constructor(canvas) {
+    this.canvas = canvas;
+    this.reset();
+  }
 
-    <script>
-        // Particle Network Animation
-        const canvas = document.getElementById('particleCanvas');
-        const ctx = canvas.getContext('2d');
-        
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+  reset() {
+    this.x = Math.random() * this.canvas.width;
+    this.y = Math.random() * this.canvas.height;
+    this.vx = (Math.random() - 0.5) * 8 * CONFIG.intensity;
+    this.vy = (Math.random() - 0.5) * 8 * CONFIG.intensity;
+    this.size = Math.random() * 5 + 1;
+    this.hue = Math.random() * 360;
+    this.life = Math.random() * 100 + 50;
+    this.maxLife = this.life;
+    this.trail = [];
+    this.trailLength = Math.floor(Math.random() * 15) + 5;
+  }
 
-        let particles = [];
-        const particleCount = 100;
-        const connectionDistance = 150;
-        const mouseDistance = 200;
+  update() {
+    this.trail.push({ x: this.x, y: this.y });
+    if (this.trail.length > this.trailLength) this.trail.shift();
 
-        let mouse = {
-            x: null,
-            y: null
-        };
+    this.x += this.vx;
+    this.y += this.vy;
+    this.vx += (Math.random() - 0.5) * 0.5 * CONFIG.intensity;
+    this.vy += (Math.random() - 0.5) * 0.5 * CONFIG.intensity;
+    this.hue += 3 * CONFIG.intensity;
+    this.life--;
 
-        window.addEventListener('mousemove', (e) => {
-            mouse.x = e.x;
-            mouse.y = e.y;
-        });
+    // Bounce
+    if (this.x < 0 || this.x > this.canvas.width) this.vx *= -1;
+    if (this.y < 0 || this.y > this.canvas.height) this.vy *= -1;
 
-        window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        });
+    if (this.life <= 0) this.reset();
+  }
 
-        class Particle {
-            constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.vx = (Math.random() - 0.5) * 2;
-                this.vy = (Math.random() - 0.5) * 2;
-                this.size = Math.random() * 3 + 1;
-                this.color = `rgba(${Math.random() > 0.5 ? '0, 255, 255' : '138, 43, 226'}, ${Math.random() * 0.5 + 0.5})`;
-            }
+  draw(ctx) {
+    // Draw trail
+    for (let i = 0; i < this.trail.length; i++) {
+      const t = this.trail[i];
+      const alpha = (i / this.trail.length) * (this.life / this.maxLife);
+      ctx.beginPath();
+      ctx.arc(t.x, t.y, this.size * (i / this.trail.length), 0, Math.PI * 2);
+      ctx.fillStyle = `hsla(${this.hue + i * 5}, 100%, 50%, ${alpha})`;
+      ctx.fill();
+    }
 
-            update() {
-                this.x += this.vx;
-                this.y += this.vy;
+    // Draw particle
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    ctx.fillStyle = `hsla(${this.hue}, 100%, 60%, ${this.life / this.maxLife})`;
+    ctx.shadowBlur = 20;
+    ctx.shadowColor = `hsla(${this.hue}, 100%, 50%, 0.8)`;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+  }
+}
 
-                // Bounce off edges
-                if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
-                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+let particles = [];
 
-                // Mouse interaction
-                if (mouse.x != null) {
-                    let dx = mouse.x - this.x;
-                    let dy = mouse.y - this.y;
-                    let distance = Math.sqrt(dx * dx + dy * dy);
-                    
-                    if (distance < mouseDistance) {
-                        const forceDirectionX = dx / distance;
-                        const forceDirectionY = dy / distance;
-                        const force = (mouseDistance - distance) / mouseDistance;
-                        const directionX = forceDirectionX * force * 3;
-                        const directionY = forceDirectionY * force * 3;
-                        
-                        this.vx += directionX * 0.05;
-                        this.vy += directionY * 0.05;
-                    }
-                }
-            }
+function initParticles(count) {
+  for (let i = 0; i < count; i++) {
+    particles.push(new Particle(canvases[i % 3]));
+  }
+}
 
-            draw() {
-                ctx.fillStyle = this.color;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-                
-                // Glow effect
-                ctx.shadowBlur = 15;
-                ctx.shadowColor = this.color;
-            }
-        }
+function drawConnections(ctx, particles) {
+  for (let i = 0; i < particles.length; i++) {
+    for (let j = i + 1; j < Math.min(particles.length, i + 20); j++) {
+      const dx = particles[i].x - particles[j].x;
+      const dy = particles[i].y - particles[j].y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 100) {
+        ctx.beginPath();
+        ctx.moveTo(particles[i].x, particles[i].y);
+        ctx.lineTo(particles[j].x, particles[j].y);
+        ctx.strokeStyle = `hsla(${particles[i].hue}, 100%, 50%, ${1 - dist / 100})`;
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
+      }
+    }
+  }
+}
 
-        function init() {
-            particles = [];
-            for (let i = 0; i < particleCount; i++) {
-                particles.push(new Particle());
-            }
-        }
+// ============ DOM STORM ============
+const domStorm = document.getElementById('domStorm');
 
-        function connect() {
-            for (let i = 0; i < particles.length; i++) {
-                for (let j = i; j < particles.length; j++) {
-                    let dx = particles[i].x - particles[j].x;
-                    let dy = particles[i].y - particles[j].y;
-                    let distance = Math.sqrt(dx * dx + dy * dy);
+function createDOMElement() {
+  const el = document.createElement('div');
+  el.className = 'dom-element';
+  el.style.left = Math.random() * 100 + '%';
+  el.style.top = Math.random() * 100 + '%';
+  el.style.animationDuration = `${Math.random() * 0.5 + 0.1}s, ${Math.random() * 3 + 0.5}s, ${Math.random() * 0.3 + 0.1}s, ${Math.random() * 0.2 + 0.05}s`;
+  el.style.animationDelay = `${Math.random() * -5}s`;
+  domStorm.appendChild(el);
+  return el;
+}
 
-                    if (distance < connectionDistance) {
-                        let opacity = 1 - (distance / connectionDistance);
-                        ctx.strokeStyle = `rgba(0, 255, 255, ${opacity * 0.5})`;
-                        ctx.lineWidth = 1;
-                        ctx.beginPath();
-                        ctx.moveTo(particles[i].x, particles[i].y);
-                        ctx.lineTo(particles[j].x, particles[j].y);
-                        ctx.stroke();
-                    }
-                }
-            }
-        }
+function addDOMStorm(count) {
+  for (let i = 0; i < count; i++) {
+    createDOMElement();
+  }
+}
 
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            for (let i = 0; i < particles.length; i++) {
-                particles[i].update();
-                particles[i].draw();
-            }
-            
-            connect();
-            requestAnimationFrame(animate);
-        }
+// ============ MATRIX RAIN ============
+const matrixRain = document.getElementById('matrixRain');
+const matrixChars = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789ABCDEF';
 
-        init();
-        animate();
+function createMatrixColumn() {
+  const col = document.createElement('div');
+  col.style.cssText = `
+    position: absolute;
+    left: ${Math.random() * 100}%;
+    top: -100%;
+    animation: matrixFall ${Math.random() * 3 + 1}s linear infinite;
+    animation-delay: ${Math.random() * -5}s;
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+    font-size: ${Math.random() * 10 + 10}px;
+    color: hsl(${Math.random() * 60 + 90}, 100%, 50%);
+    text-shadow: 0 0 10px currentColor;
+  `;
+  
+  let text = '';
+  const length = Math.floor(Math.random() * 30) + 10;
+  for (let i = 0; i < length; i++) {
+    text += matrixChars[Math.floor(Math.random() * matrixChars.length)];
+  }
+  col.textContent = text;
+  matrixRain.appendChild(col);
+}
 
-        // Add click effect
-        window.addEventListener('click', (e) => {
-            for (let i = 0; i < 5; i++) {
-                let particle = new Particle();
-                particle.x = e.x;
-                particle.y = e.y;
-                particle.vx = (Math.random() - 0.5) * 10;
-                particle.vy = (Math.random() - 0.5) * 10;
-                particles.push(particle);
-            }
-            
-            // Remove extra particles after animation
-            setTimeout(() => {
-                particles = particles.slice(0, particleCount);
-            }, 2000);
-        });
+// Add matrix fall animation
+const matrixStyle = document.createElement('style');
+matrixStyle.textContent = `
+  @keyframes matrixFall {
+    0% { top: -100%; }
+    100% { top: 100%; }
+  }
+`;
+document.head.appendChild(matrixStyle);
 
-        // Card hover sound effect (visual feedback)
-        document.querySelectorAll('.tech-card').forEach(card => {
-            card.addEventListener('mouseenter', function() {
-                this.style.transform = 'translateY(-10px) scale(1.02)';
-            });
-            
-            card.addEventListener('mouseleave', function() {
-                this.style.transform = 'translateY(0) scale(1)';
-            });
-        });
+function initMatrix() {
+  for (let i = 0; i < CONFIG.matrixColumns; i++) {
+    createMatrixColumn();
+  }
+}
 
-        console.log('🚀 Tech Animation Loaded Successfully!');
-    </script>
+// ============ MEMORY LEAK SIMULATOR ============
+let leakedArrays = [];
+
+function leakMemory() {
+  // Create large arrays that never get garbage collected
+  const arr = new Array(10000).fill(null).map(() => ({
+    data: new Float64Array(1000),
+    nested: { more: new Array(100).fill(Math.random()) }
+  }));
+  leakedArrays.push(arr);
+}
+
+// ============ FPS COUNTER ============
+let frameCount = 0;
+let lastTime = performance.now();
+let fps = 0;
+
+function updateFPS() {
+  frameCount++;
+  const now = performance.now();
+  if (now - lastTime >= 1000) {
+    fps = frameCount;
+    frameCount = 0;
+    lastTime = now;
+    
+    document.getElementById('fps').textContent = fps;
+    document.getElementById('fps').style.color = 
+      fps > 30 ? '#0f0' : fps > 15 ? '#ff0' : '#f00';
+    
+    document.getElementById('particleCount').textContent = particles.length;
+    document.getElementById('domCount').textContent = domStorm.children.length;
+    
+    if (performance.memory) {
+      const mb = (performance.memory.usedJSHeapSize / 1048576).toFixed(1);
+      document.getElementById('memUsage').textContent = mb + ' MB';
+    }
+    
+    document.getElementById('intensity').textContent = CONFIG.intensity;
+  }
+}
+
+// ============ MAIN LOOP ============
+function animate() {
+  if (!CONFIG.running) return;
+
+  // Clear canvases with fade effect
+  contexts.forEach(ctx => {
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+  });
+
+  // Update and draw particles
+  particles.forEach(p => {
+    p.update();
+    const ctxIndex = canvases.indexOf(p.canvas);
+    p.draw(contexts[ctxIndex]);
+  });
+
+  // Draw connections on first canvas
+  drawConnections(contexts[0], particles.slice(0, 200));
+
+  // Add extra chaos - random explosions
+  if (Math.random() < 0.1 * CONFIG.intensity) {
+    const ctx = contexts[Math.floor(Math.random() * 3)];
+    const x = Math.random() * ctx.canvas.width;
+    const y = Math.random() * ctx.canvas.height;
+    const radius = Math.random() * 100 + 50;
+    const gradient = ctx.createRadialGradient(x, y, 0, x, y, radius);
+    gradient.addColorStop(0, `hsla(${Math.random() * 360}, 100%, 50%, 0.8)`);
+    gradient.addColorStop(1, 'transparent');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(x - radius, y - radius, radius * 2, radius * 2);
+  }
+
+  // Memory leak every few frames
+  if (frameCount % 60 === 0) {
+    leakMemory();
+  }
+
+  updateFPS();
+  requestAnimationFrame(animate);
+}
+
+// ============ CONTROLS ============
+function addMoreParticles() {
+  CONFIG.intensity += 0.5;
+  initParticles(1000);
+}
+
+function addMoreDOM() {
+  CONFIG.intensity += 0.5;
+  addDOMStorm(200);
+  for (let i = 0; i < 20; i++) createMatrixColumn();
+}
+
+function maxChaos() {
+  CONFIG.intensity = 5;
+  initParticles(5000);
+  addDOMStorm(1000);
+  for (let i = 0; i < 200; i++) createMatrixColumn();
+  
+  // Extra heavy: nested animations
+  for (let i = 0; i < 50; i++) {
+    const el = document.createElement('div');
+    el.style.cssText = `
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      border: ${Math.random() * 5 + 1}px solid hsla(${Math.random()*360}, 100%, 50%, 0.5);
+      border-radius: ${Math.random() * 50}%;
+      animation: crazySpin ${Math.random() * 0.5 + 0.1}s linear infinite;
+      pointer-events: none;
+      z-index: ${10 + i};
+      mix-blend-mode: difference;
+    `;
+    document.body.appendChild(el);
+  }
+}
+
+function resetAll() {
+  CONFIG.running = false;
+  setTimeout(() => {
+    location.reload();
+  }, 100);
+}
+
+// ============ INIT ============
+initParticles(CONFIG.particleCount);
+addDOMStorm(CONFIG.domElements);
+initMatrix();
+animate();
+
+// Auto-escalate intensity
+setInterval(() => {
+  if (CONFIG.running) {
+    CONFIG.intensity += 0.1;
+    if (Math.random() < 0.3) {
+      initParticles(100);
+    }
+    if (Math.random() < 0.2) {
+      addDOMStorm(10);
+    }
+  }
+}, 3000);
+
+console.log('%c⚠️ DEVICE STRESS TEST ACTIVE ⚠️', 'color: red; font-size: 20px; font-weight: bold;');
+console.log('%cClose this tab if your device starts overheating!', 'color: yellow; font-size: 14px;');
+</script>
+
 </body>
 </html>
