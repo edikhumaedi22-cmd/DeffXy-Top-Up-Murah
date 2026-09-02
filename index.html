@@ -3,557 +3,1113 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>⚠️ DEVICE KILLER - Stress Test</title>
+<title>GameStore - Jual Beli Akun Game & Top Up Diamond</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+  
+  :root {
+    --primary: #8b5cf6;
+    --secondary: #06b6d4;
+    --accent: #ec4899;
+    --dark: #0f0f1e;
+    --darker: #07070f;
+    --card: rgba(255,255,255,0.05);
+    --border: rgba(139, 92, 246, 0.3);
+  }
   
   body {
-    background: #000;
-    overflow: hidden;
-    font-family: 'Courier New', monospace;
-    color: #0f0;
+    background: var(--darker);
+    color: #fff;
+    overflow-x: hidden;
   }
-
-  #warning {
+  
+  body::before {
+    content: '';
     position: fixed;
-    top: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(255,0,0,0.8);
-    color: white;
-    padding: 8px 16px;
-    border-radius: 5px;
-    z-index: 9999;
-    font-size: 12px;
-    animation: blink 0.5s infinite;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: 
+      radial-gradient(circle at 20% 30%, rgba(139,92,246,0.15), transparent 50%),
+      radial-gradient(circle at 80% 70%, rgba(6,182,212,0.15), transparent 50%),
+      radial-gradient(circle at 50% 50%, rgba(236,72,153,0.08), transparent 50%);
+    z-index: -1;
   }
-
-  @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
-  }
-
-  canvas {
+  
+  /* NAVBAR */
+  nav {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    top: 0; left: 0; right: 0;
+    padding: 18px 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(15, 15, 30, 0.8);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    z-index: 1000;
   }
-
-  #canvas1 { z-index: 1; }
-  #canvas2 { z-index: 2; mix-blend-mode: screen; }
-  #canvas3 { z-index: 3; mix-blend-mode: lighten; }
-
-  .dom-storm {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 4;
-    pointer-events: none;
+  
+  .logo {
+    font-size: 1.6rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: 1px;
   }
-
-  .dom-element {
+  
+  .logo span { color: var(--accent); -webkit-text-fill-color: var(--accent); }
+  
+  .nav-links { display: flex; gap: 30px; list-style: none; }
+  
+  .nav-links a {
+    color: #ccc;
+    text-decoration: none;
+    font-weight: 500;
+    transition: 0.3s;
+    position: relative;
+  }
+  
+  .nav-links a:hover { color: var(--secondary); }
+  
+  .nav-links a::after {
+    content: '';
     position: absolute;
-    width: 20px;
-    height: 20px;
+    bottom: -5px; left: 0;
+    width: 0; height: 2px;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    transition: 0.3s;
+  }
+  
+  .nav-links a:hover::after { width: 100%; }
+  
+  .nav-right { display: flex; gap: 10px; align-items: center; }
+  
+  .icon-btn {
+    width: 42px;
+    height: 42px;
+    background: var(--card);
+    border: 1px solid var(--border);
     border-radius: 50%;
-    animation: crazySpin 0.3s linear infinite, 
-               crazyMove 2s ease-in-out infinite alternate,
-               crazyScale 0.5s ease-in-out infinite alternate,
-               crazyColor 0.1s linear infinite;
-    filter: blur(1px) drop-shadow(0 0 10px currentColor);
-  }
-
-  @keyframes crazySpin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-
-  @keyframes crazyMove {
-    0% { margin-left: 0; margin-top: 0; }
-    100% { margin-left: 100px; margin-top: 100px; }
-  }
-
-  @keyframes crazyScale {
-    0% { transform: scale(1) rotate(0deg); }
-    100% { transform: scale(3) rotate(720deg); }
-  }
-
-  @keyframes crazyColor {
-    0% { color: #ff0000; background: #ff0000; }
-    25% { color: #00ff00; background: #00ff00; }
-    50% { color: #0000ff; background: #0000ff; }
-    75% { color: #ffff00; background: #ffff00; }
-    100% { color: #ff00ff; background: #ff00ff; }
-  }
-
-  .matrix-rain {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 5;
-    pointer-events: none;
-    font-size: 14px;
-    line-height: 14px;
-    color: #0f0;
-    text-shadow: 0 0 5px #0f0;
-    overflow: hidden;
-    opacity: 0.7;
-  }
-
-  .glitch-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 6;
-    pointer-events: none;
-    background: repeating-linear-gradient(
-      0deg,
-      rgba(0,0,0,0.1) 0px,
-      rgba(0,0,0,0.1) 1px,
-      transparent 1px,
-      transparent 3px
-    );
-    animation: glitchShift 0.1s infinite;
-  }
-
-  @keyframes glitchShift {
-    0% { transform: translate(0, 0); }
-    25% { transform: translate(-2px, 1px); }
-    50% { transform: translate(2px, -1px); }
-    75% { transform: translate(-1px, 2px); }
-    100% { transform: translate(1px, -2px); }
-  }
-
-  #stats {
-    position: fixed;
-    bottom: 10px;
-    left: 10px;
-    background: rgba(0,0,0,0.8);
-    color: #0f0;
-    padding: 10px;
-    border: 1px solid #0f0;
-    border-radius: 5px;
-    z-index: 9999;
-    font-size: 11px;
-    min-width: 200px;
-  }
-
-  #controls {
-    position: fixed;
-    bottom: 10px;
-    right: 10px;
-    background: rgba(0,0,0,0.8);
-    color: #0f0;
-    padding: 10px;
-    border: 1px solid #f00;
-    border-radius: 5px;
-    z-index: 9999;
-    font-size: 11px;
-  }
-
-  button {
-    background: #300;
-    color: #f00;
-    border: 1px solid #f00;
-    padding: 5px 10px;
-    margin: 2px;
+    color: #fff;
     cursor: pointer;
-    font-family: inherit;
-    font-size: 11px;
+    font-size: 1.1rem;
+    transition: 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
-
-  button:hover {
-    background: #f00;
-    color: #000;
+  
+  .icon-btn:hover { background: var(--primary); border-color: var(--primary); }
+  
+  .nav-btn {
+    padding: 10px 24px;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    border: none;
+    border-radius: 30px;
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 0 4px 20px rgba(139,92,246,0.4);
   }
-
-  .heavy-filter {
+  
+  .nav-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 25px rgba(139,92,246,0.6); }
+  
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 100px 5% 50px;
+    position: relative;
+  }
+  
+  .hero-content { max-width: 700px; }
+  
+  .badge {
+    display: inline-block;
+    padding: 6px 16px;
+    background: rgba(139,92,246,0.15);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    font-size: 0.85rem;
+    margin-bottom: 20px;
+    color: var(--secondary);
+  }
+  
+  .hero h1 {
+    font-size: 3.8rem;
+    line-height: 1.1;
+    margin-bottom: 20px;
+    font-weight: 900;
+  }
+  
+  .hero h1 .gradient {
+    background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+  .hero p {
+    font-size: 1.15rem;
+    color: #aaa;
+    margin-bottom: 35px;
+    line-height: 1.7;
+  }
+  
+  .hero-btns { display: flex; gap: 15px; flex-wrap: wrap; }
+  
+  .btn-primary, .btn-secondary {
+    padding: 14px 32px;
+    border: none;
+    border-radius: 30px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+    font-size: 1rem;
+  }
+  
+  .btn-primary {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: #fff;
+    box-shadow: 0 4px 25px rgba(139,92,246,0.5);
+  }
+  
+  .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(139,92,246,0.7); }
+  
+  .btn-secondary {
+    background: transparent;
+    color: #fff;
+    border: 1px solid var(--border);
+  }
+  
+  .btn-secondary:hover { background: var(--card); border-color: var(--secondary); }
+  
+  .stats { display: flex; gap: 40px; margin-top: 50px; }
+  
+  .stat h3 {
+    font-size: 2rem;
+    background: linear-gradient(135deg, var(--secondary), var(--primary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+  .stat p { color: #888; font-size: 0.9rem; }
+  
+  .hero-image {
+    position: absolute;
+    right: 5%;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(139,92,246,0.3), transparent 70%);
+    border-radius: 50%;
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  @keyframes float {
+    0%, 100% { transform: translateY(-50%); }
+    50% { transform: translateY(-55%); }
+  }
+  
+  /* SECTIONS */
+  section { padding: 80px 5%; }
+  
+  .section-title { text-align: center; margin-bottom: 50px; }
+  
+  .section-title h2 { font-size: 2.5rem; margin-bottom: 10px; }
+  
+  .section-title h2 .gradient {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+  .section-title p { color: #888; }
+  
+  /* TABS */
+  .tabs {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+  }
+  
+  .tab {
+    padding: 10px 24px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 30px;
+    cursor: pointer;
+    transition: 0.3s;
+    color: #ccc;
+  }
+  
+  .tab.active, .tab:hover {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: #fff;
+    border-color: transparent;
+  }
+  
+  /* CARDS */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+  }
+  
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    overflow: hidden;
+    transition: 0.4s;
+    backdrop-filter: blur(10px);
+    cursor: pointer;
+  }
+  
+  .card:hover {
+    transform: translateY(-10px);
+    border-color: var(--secondary);
+    box-shadow: 0 20px 40px rgba(6,182,212,0.2);
+  }
+  
+  .card-img {
+    height: 180px;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+    position: relative;
+  }
+  
+  .card-badge {
+    position: absolute;
+    top: 10px; right: 10px;
+    padding: 5px 12px;
+    background: rgba(0,0,0,0.6);
+    border-radius: 15px;
+    font-size: 0.75rem;
+    backdrop-filter: blur(10px);
+  }
+  
+  .card-body { padding: 20px; }
+  
+  .card-body h3 { margin-bottom: 8px; font-size: 1.2rem; }
+  
+  .card-body .game-tag {
+    color: var(--secondary);
+    font-size: 0.85rem;
+    margin-bottom: 12px;
+  }
+  
+  .card-features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 15px;
+  }
+  
+  .feature {
+    padding: 4px 10px;
+    background: rgba(139,92,246,0.15);
+    border-radius: 10px;
+    font-size: 0.75rem;
+    color: #bbb;
+  }
+  
+  .card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 15px;
+    border-top: 1px solid var(--border);
+  }
+  
+  .price {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--accent);
+  }
+  
+  .buy-btn {
+    padding: 8px 18px;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    border: none;
+    border-radius: 20px;
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  
+  .buy-btn:hover { transform: scale(1.05); }
+  
+  /* DIAMOND */
+  .diamond-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+  }
+  
+  .diamond-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    padding: 25px;
+    text-align: center;
+    transition: 0.3s;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .diamond-card::before {
+    content: '💎';
+    position: absolute;
+    font-size: 6rem;
+    opacity: 0.08;
+    top: -10px; right: -10px;
+  }
+  
+  .diamond-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--secondary);
+    background: rgba(6,182,212,0.1);
+  }
+  
+  .diamond-card .amount {
+    font-size: 2rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--secondary), var(--primary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+  .diamond-card .label { color: #888; margin-bottom: 15px; }
+  
+  .diamond-card .price {
+    font-size: 1.1rem;
+    color: var(--accent);
+    margin-bottom: 15px;
+  }
+  
+  /* FEATURES */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 25px;
+  }
+  
+  .feature-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 30px;
+    text-align: center;
+    transition: 0.3s;
+  }
+  
+  .feature-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--primary);
+  }
+  
+  .feature-icon {
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 20px;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+  }
+  
+  .feature-card h3 { margin-bottom: 10px; }
+  .feature-card p { color: #888; font-size: 0.95rem; line-height: 1.6; }
+  
+  /* FOOTER */
+  footer {
+    background: var(--darker);
+    border-top: 1px solid var(--border);
+    padding: 50px 5% 20px;
+    margin-top: 50px;
+  }
+  
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 30px;
+  }
+  
+  .footer-col h4 { margin-bottom: 15px; color: var(--secondary); }
+  .footer-col a { display: block; color: #888; text-decoration: none; margin-bottom: 8px; transition: 0.3s; }
+  .footer-col a:hover { color: var(--primary); }
+  .footer-col p { color: #888; line-height: 1.7; }
+  
+  .footer-bottom {
+    text-align: center;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    color: #666;
+  }
+  
+  /* MODAL */
+  .modal {
+    display: none;
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 7;
-    pointer-events: none;
-    backdrop-filter: blur(0.5px) saturate(200%) hue-rotate(0deg);
-    animation: filterCrazy 2s linear infinite;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(10px);
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
   }
-
-  @keyframes filterCrazy {
-    0% { backdrop-filter: blur(0.5px) saturate(200%) hue-rotate(0deg); }
-    25% { backdrop-filter: blur(1px) saturate(300%) hue-rotate(90deg); }
-    50% { backdrop-filter: blur(0.5px) saturate(400%) hue-rotate(180deg); }
-    75% { backdrop-filter: blur(1.5px) saturate(300%) hue-rotate(270deg); }
-    100% { backdrop-filter: blur(0.5px) saturate(200%) hue-rotate(360deg); }
+  
+  .modal.active { display: flex; }
+  
+  .modal-content {
+    background: var(--dark);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 30px;
+    max-width: 500px;
+    width: 100%;
+    position: relative;
+    animation: slideUp 0.3s;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .close-modal {
+    position: absolute;
+    top: 15px; right: 15px;
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 1.5rem;
+    cursor: pointer;
+  }
+  
+  .modal h2 { margin-bottom: 20px; }
+  
+  .form-group { margin-bottom: 15px; }
+  .form-group label { display: block; margin-bottom: 5px; color: #ccc; font-size: 0.9rem; }
+  .form-group input, .form-group textarea {
+    width: 100%;
+    padding: 12px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: #fff;
+    font-size: 1rem;
+    font-family: inherit;
+  }
+  .form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--secondary); }
+  
+  .total {
+    padding: 15px;
+    background: rgba(139,92,246,0.1);
+    border-radius: 10px;
+    margin: 20px 0;
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.2rem;
+    font-weight: 700;
+  }
+  
+  .total span:last-child { color: var(--accent); }
+  
+  .info-box {
+    padding: 12px;
+    background: rgba(6,182,212,0.1);
+    border: 1px solid rgba(6,182,212,0.3);
+    border-radius: 10px;
+    font-size: 0.85rem;
+    color: #ccc;
+    margin-bottom: 15px;
+    line-height: 1.5;
+  }
+  
+  .info-box strong { color: var(--secondary); }
+  
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 30px; right: 30px;
+    padding: 15px 25px;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    border-radius: 30px;
+    color: #fff;
+    font-weight: 600;
+    transform: translateX(400px);
+    transition: 0.4s;
+    z-index: 3000;
+    box-shadow: 0 10px 30px rgba(139,92,246,0.5);
+  }
+  
+  .toast.show { transform: translateX(0); }
+  .toast.error { background: linear-gradient(135deg, #ef4444, #dc2626); }
+  .toast.success { background: linear-gradient(135deg, #10b981, #059669); }
+  
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .hero h1 { font-size: 2.3rem; }
+    .hero-image { display: none; }
+    .stats { gap: 20px; }
+    .stat h3 { font-size: 1.5rem; }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+    .section-title h2 { font-size: 1.8rem; }
   }
 </style>
 </head>
 <body>
 
-<div id="warning">⚠️ STRESS TEST - HP BISA CRASH! ⚠️</div>
+<nav>
+  <div class="logo">Game<span>Store</span></div>
+  <ul class="nav-links">
+    <li><a href="#home">Home</a></li>
+    <li><a href="#akun">Akun Game</a></li>
+    <li><a href="#diamond">Top Up</a></li>
+    <li><a href="#fitur">Fitur</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="icon-btn" onclick="openSettings()" title="Setting Telegram Bot">⚙️</button>
+    <button class="nav-btn" onclick="showToast('Silakan login untuk melanjutkan')">Login</button>
+  </div>
+</nav>
 
-<canvas id="canvas1"></canvas>
-<canvas id="canvas2"></canvas>
-<canvas id="canvas3"></canvas>
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-content">
+    <span class="badge">🔥 #1 Marketplace Game Terpercaya</span>
+    <h1>Jual Beli <span class="gradient">Akun Game</span> & Top Up <span class="gradient">Diamond</span> Termurah</h1>
+    <p>Platform terpercaya untuk jual beli akun game premium dan top up diamond dengan harga bersaing, proses cepat, dan transaksi aman 100%.</p>
+    <div class="hero-btns">
+      <button class="btn-primary" onclick="document.getElementById('akun').scrollIntoView({behavior:'smooth'})">🎮 Jelajahi Akun</button>
+      <button class="btn-secondary" onclick="document.getElementById('diamond').scrollIntoView({behavior:'smooth'})">💎 Top Up Diamond</button>
+    </div>
+    <div class="stats">
+      <div class="stat"><h3>50K+</h3><p>Akun Terjual</p></div>
+      <div class="stat"><h3>100K+</h3><p>Member Aktif</p></div>
+      <div class="stat"><h3>4.9★</h3><p>Rating</p></div>
+    </div>
+  </div>
+  <div class="hero-image"></div>
+</section>
 
-<div class="dom-storm" id="domStorm"></div>
-<div class="matrix-rain" id="matrixRain"></div>
-<div class="glitch-overlay"></div>
-<div class="heavy-filter"></div>
+<!-- AKUN GAME -->
+<section id="akun">
+  <div class="section-title">
+    <h2>Akun Game <span class="gradient">Premium</span></h2>
+    <p>Pilih akun game favoritmu dengan harga terbaik</p>
+  </div>
+  
+  <div class="tabs">
+    <div class="tab active" onclick="filterGame('all', this)">Semua</div>
+    <div class="tab" onclick="filterGame('ml', this)">Mobile Legends</div>
+    <div class="tab" onclick="filterGame('ff', this)">Free Fire</div>
+    <div class="tab" onclick="filterGame('pubg', this)">PUBG Mobile</div>
+    <div class="tab" onclick="filterGame('gi', this)">Genshin Impact</div>
+  </div>
+  
+  <div class="grid" id="accountGrid"></div>
+</section>
 
-<div id="stats">
-  <div>FPS: <span id="fps">0</span></div>
-  <div>Particles: <span id="particleCount">0</span></div>
-  <div>DOM Elements: <span id="domCount">0</span></div>
-  <div>Memory: <span id="memUsage">N/A</span></div>
-  <div>Intensity: <span id="intensity">1</span>x</div>
+<!-- DIAMOND -->
+<section id="diamond">
+  <div class="section-title">
+    <h2>Top Up <span class="gradient">Diamond</span> Cepat</h2>
+    <p>Proses instan, harga termurah, 24/7 online</p>
+  </div>
+  
+  <div class="tabs">
+    <div class="tab active" onclick="switchDiamond('ml', this)">Mobile Legends</div>
+    <div class="tab" onclick="switchDiamond('ff', this)">Free Fire</div>
+    <div class="tab" onclick="switchDiamond('pubg', this)">PUBG Mobile</div>
+  </div>
+  
+  <div class="diamond-grid" id="diamondGrid"></div>
+</section>
+
+<!-- FITUR -->
+<section id="fitur">
+  <div class="section-title">
+    <h2>Kenapa Pilih <span class="gradient">GameStore?</span></h2>
+    <p>Kami memberikan pengalaman terbaik untuk para gamers</p>
+  </div>
+  
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">🔒</div>
+      <h3>Transaksi Aman</h3>
+      <p>Sistem escrow yang melindungi setiap transaksi antara buyer dan seller</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">⚡</div>
+      <h3>Proses Cepat</h3>
+      <p>Top up diamond diproses dalam hitungan detik, akun langsung bisa dipakai</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">💰</div>
+      <h3>Harga Termurah</h3>
+      <p>Dapatkan harga terbaik dengan promo dan diskon setiap hari</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📲</div>
+      <h3>Notif Telegram</h3>
+      <p>Owner langsung dapat notifikasi pesanan baru via Telegram Bot realtime</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-col">
+      <div class="logo" style="margin-bottom:15px">Game<span>Store</span></div>
+      <p>Platform jual beli akun game dan top up diamond terpercaya di Indonesia sejak 2020.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Layanan</h4>
+      <a href="#">Jual Akun</a>
+      <a href="#">Beli Akun</a>
+      <a href="#">Top Up</a>
+      <a href="#">Joki Rank</a>
+    </div>
+    <div class="footer-col">
+      <h4>Perusahaan</h4>
+      <a href="#">Tentang Kami</a>
+      <a href="#">Karir</a>
+      <a href="#">Blog</a>
+      <a href="#">Kontak</a>
+    </div>
+    <div class="footer-col">
+      <h4>Bantuan</h4>
+      <a href="#">FAQ</a>
+      <a href="#">Syarat & Ketentuan</a>
+      <a href="#">Kebijakan Privasi</a>
+      <a href="#">Hubungi Support</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    © 2026 GameStore. All rights reserved. Made with 💜 for Gamers.
+  </div>
+</footer>
+
+<!-- MODAL CHECKOUT -->
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <button class="close-modal" onclick="closeModal()">✕</button>
+    <h2 id="modalTitle">Checkout</h2>
+    <div id="modalBody"></div>
+  </div>
 </div>
 
-<div id="controls">
-  <div style="margin-bottom:5px; color:#f00;">⚡ KONTROL BENCANA ⚡</div>
-  <button onclick="addMoreParticles()">+ Particles</button>
-  <button onclick="addMoreDOM()">+ DOM Elements</button>
-  <button onclick="maxChaos()">☠️ MAX CHAOS</button>
-  <button onclick="resetAll()">🔄 Reset</button>
+<!-- MODAL SETTINGS TELEGRAM -->
+<div class="modal" id="settingsModal">
+  <div class="modal-content">
+    <button class="close-modal" onclick="closeSettings()">✕</button>
+    <h2>⚙️ Setting Telegram Bot</h2>
+    <p style="color:#888;margin-bottom:20px;font-size:0.9rem">Konfigurasi bot untuk menerima notifikasi pesanan otomatis</p>
+    
+    <div class="info-box">
+      <strong>Cara Setup:</strong><br>
+      1. Chat <strong>@BotFather</strong> di Telegram → kirim <code>/newbot</code><br>
+      2. Copy <strong>Bot Token</strong> yang dikasih<br>
+      3. Chat <strong>@userinfobot</strong> untuk dapat <strong>Chat ID</strong> kamu<br>
+      4. Paste keduanya di bawah ini
+    </div>
+    
+    <div class="form-group">
+      <label>🤖 Bot Token</label>
+      <input type="text" id="botToken" placeholder="1234567890:ABCdefGHIjklMNOpqrSTUvwxYZ">
+    </div>
+    
+    <div class="form-group">
+      <label>💬 Chat ID (Owner)</label>
+      <input type="text" id="chatId" placeholder="123456789">
+    </div>
+    
+    <button class="btn-primary" style="width:100%;margin-top:10px" onclick="saveSettings()">💾 Simpan & Test Kirim</button>
+    <button class="btn-secondary" style="width:100%;margin-top:10px" onclick="testTelegram()">🧪 Test Kirim Pesan</button>
+  </div>
 </div>
 
-<!-- TOMBOL BARU DI TENGAH -->
-<button onclick="alert('slamet'); this.innerText='slamet'; this.style.background='#0f0'; this.style.color='#000'; this.style.borderColor='#0f0';" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 10000; padding: 20px 40px; font-size: 24px; font-weight: bold; background: #ff0000; color: #ffffff; border: 3px solid #ffffff; border-radius: 10px; cursor: pointer; font-family: 'Courier New', monospace; box-shadow: 0 0 30px rgba(255, 0, 0, 0.8); animation: blink 0.5s infinite;">
-  TEKAN AKU
-</button>
+<!-- TOAST -->
+<div class="toast" id="toast">Berhasil!</div>
 
 <script>
-// ============ CONFIGURATION ============
-let CONFIG = {
-  particleCount: 2000,
-  domElements: 500,
-  matrixColumns: 100,
-  intensity: 1,
-  running: true
-};
-
-// ============ CANVAS PARTICLE SYSTEM ============
-const canvases = [
-  document.getElementById('canvas1'),
-  document.getElementById('canvas2'),
-  document.getElementById('canvas3')
-];
-
-const contexts = canvases.map(c => c.getContext('2d'));
-
-function resizeCanvases() {
-  canvases.forEach(c => {
-    c.width = window.innerWidth;
-    c.height = window.innerHeight;
-  });
-}
-resizeCanvases();
-window.addEventListener('resize', resizeCanvases);
-
-class Particle {
-  constructor(canvas) {
-    this.canvas = canvas;
-    this.reset();
-  }
-
-  reset() {
-    this.x = Math.random() * this.canvas.width;
-    this.y = Math.random() * this.canvas.height;
-    this.vx = (Math.random() - 0.5) * 8 * CONFIG.intensity;
-    this.vy = (Math.random() - 0.5) * 8 * CONFIG.intensity;
-    this.size = Math.random() * 5 + 1;
-    this.hue = Math.random() * 360;
-    this.life = Math.random() * 100 + 50;
-    this.maxLife = this.life;
-    this.trail = [];
-    this.trailLength = Math.floor(Math.random() * 15) + 5;
-  }
-
-  update() {
-    this.trail.push({ x: this.x, y: this.y });
-    if (this.trail.length > this.trailLength) this.trail.shift();
-
-    this.x += this.vx;
-    this.y += this.vy;
-    this.vx += (Math.random() - 0.5) * 0.5 * CONFIG.intensity;
-    this.vy += (Math.random() - 0.5) * 0.5 * CONFIG.intensity;
-    this.hue += 3 * CONFIG.intensity;
-    this.life--;
-
-    // Bounce
-    if (this.x < 0 || this.x > this.canvas.width) this.vx *= -1;
-    if (this.y < 0 || this.y > this.canvas.height) this.vy *= -1;
-
-    if (this.life <= 0) this.reset();
-  }
-
-  draw(ctx) {
-    // Draw trail
-    for (let i = 0; i < this.trail.length; i++) {
-      const t = this.trail[i];
-      const alpha = (i / this.trail.length) * (this.life / this.maxLife);
-      ctx.beginPath();
-      ctx.arc(t.x, t.y, this.size * (i / this.trail.length), 0, Math.PI * 2);
-      ctx.fillStyle = `hsla(${this.hue + i * 5}, 100%, 50%, ${alpha})`;
-      ctx.fill();
-    }
-
-    // Draw particle
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-    ctx.fillStyle = `hsla(${this.hue}, 100%, 60%, ${this.life / this.maxLife})`;
-    ctx.shadowBlur = 20;
-    ctx.shadowColor = `hsla(${this.hue}, 100%, 50%, 0.8)`;
-    ctx.fill();
-    ctx.shadowBlur = 0;
-  }
-}
-
-let particles = [];
-
-function initParticles(count) {
-  for (let i = 0; i < count; i++) {
-    particles.push(new Particle(canvases[i % 3]));
-  }
-}
-
-function drawConnections(ctx, particles) {
-  for (let i = 0; i < particles.length; i++) {
-    for (let j = i + 1; j < Math.min(particles.length, i + 20); j++) {
-      const dx = particles[i].x - particles[j].x;
-      const dy = particles[i].y - particles[j].y;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      if (dist < 100) {
-        ctx.beginPath();
-        ctx.moveTo(particles[i].x, particles[i].y);
-        ctx.lineTo(particles[j].x, particles[j].y);
-        ctx.strokeStyle = `hsla(${particles[i].hue}, 100%, 50%, ${1 - dist / 100})`;
-        ctx.lineWidth = 0.5;
-        ctx.stroke();
-      }
-    }
-  }
-}
-
-// ============ DOM STORM ============
-const domStorm = document.getElementById('domStorm');
-
-function createDOMElement() {
-  const el = document.createElement('div');
-  el.className = 'dom-element';
-  el.style.left = Math.random() * 100 + '%';
-  el.style.top = Math.random() * 100 + '%';
-  el.style.animationDuration = `${Math.random() * 0.5 + 0.1}s, ${Math.random() * 3 + 0.5}s, ${Math.random() * 0.3 + 0.1}s, ${Math.random() * 0.2 + 0.05}s`;
-  el.style.animationDelay = `${Math.random() * -5}s`;
-  domStorm.appendChild(el);
-  return el;
-}
-
-function addDOMStorm(count) {
-  for (let i = 0; i < count; i++) {
-    createDOMElement();
-  }
-}
-
-// ============ MATRIX RAIN ============
-const matrixRain = document.getElementById('matrixRain');
-const matrixChars = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789ABCDEF';
-
-function createMatrixColumn() {
-  const col = document.createElement('div');
-  col.style.cssText = `
-    position: absolute;
-    left: ${Math.random() * 100}%;
-    top: -100%;
-    animation: matrixFall ${Math.random() * 3 + 1}s linear infinite;
-    animation-delay: ${Math.random() * -5}s;
-    writing-mode: vertical-rl;
-    text-orientation: upright;
-    font-size: ${Math.random() * 10 + 10}px;
-    color: hsl(${Math.random() * 60 + 90}, 100%, 50%);
-    text-shadow: 0 0 10px currentColor;
-  `;
+  // ============ DATA ============
+  const accounts = [
+    { id: 1, game: 'ml', name: 'Akun ML Mythic Glory', icon: '🎮', tag: 'Mobile Legends', features: ['Mythic Glory', '120 Skin', 'All Hero'], price: 2500000, badge: 'HOT' },
+    { id: 2, game: 'ml', name: 'Akun ML Legend', icon: '🎮', tag: 'Mobile Legends', features: ['Legend', '80 Skin', 'Full Emblem'], price: 850000, badge: 'NEW' },
+    { id: 3, game: 'ff', name: 'Akun FF Level 75', icon: '🔫', tag: 'Free Fire', features: ['Lv 75', '50 Bundle', 'Rare Emote'], price: 1200000, badge: 'RARE' },
+    { id: 4, game: 'ff', name: 'Akun FF Sultan', icon: '🔫', tag: 'Free Fire', features: ['Lv 80', '100 Bundle', 'Cobra'], price: 3500000, badge: 'SULTAN' },
+    { id: 5, game: 'pubg', name: 'Akun PUBG Conqueror', icon: '🎯', tag: 'PUBG Mobile', features: ['Conqueror', 'Mythic X-Suit', '150 Skin'], price: 4200000, badge: 'TOP' },
+    { id: 6, game: 'pubg', name: 'Akun PUBG Ace', icon: '🎯', tag: 'PUBG Mobile', features: ['Ace', '60 Skin', 'Royale Pass'], price: 950000, badge: 'HOT' },
+    { id: 7, game: 'gi', name: 'Akun Genshin AR 60', icon: '⚔️', tag: 'Genshin Impact', features: ['AR 60', '5★ x8', 'Full Weapon'], price: 5500000, badge: 'LEGENDARY' },
+    { id: 8, game: 'gi', name: 'Akun Genshin Starter', icon: '⚔️', tag: 'Genshin Impact', features: ['AR 45', '5★ x2', '10 Weapon 5★'], price: 1800000, badge: 'NEW' },
+  ];
   
-  let text = '';
-  const length = Math.floor(Math.random() * 30) + 10;
-  for (let i = 0; i < length; i++) {
-    text += matrixChars[Math.floor(Math.random() * matrixChars.length)];
-  }
-  col.textContent = text;
-  matrixRain.appendChild(col);
-}
-
-// Add matrix fall animation
-const matrixStyle = document.createElement('style');
-matrixStyle.textContent = `
-  @keyframes matrixFall {
-    0% { top: -100%; }
-    100% { top: 100%; }
-  }
-`;
-document.head.appendChild(matrixStyle);
-
-function initMatrix() {
-  for (let i = 0; i < CONFIG.matrixColumns; i++) {
-    createMatrixColumn();
-  }
-}
-
-// ============ MEMORY LEAK SIMULATOR ============
-let leakedArrays = [];
-
-function leakMemory() {
-  // Create large arrays that never get garbage collected
-  const arr = new Array(10000).fill(null).map(() => ({
-    data: new Float64Array(1000),
-    nested: { more: new Array(100).fill(Math.random()) }
-  }));
-  leakedArrays.push(arr);
-}
-
-// ============ FPS COUNTER ============
-let frameCount = 0;
-let lastTime = performance.now();
-let fps = 0;
-
-function updateFPS() {
-  frameCount++;
-  const now = performance.now();
-  if (now - lastTime >= 1000) {
-    fps = frameCount;
-    frameCount = 0;
-    lastTime = now;
-    
-    document.getElementById('fps').textContent = fps;
-    document.getElementById('fps').style.color = 
-      fps > 30 ? '#0f0' : fps > 15 ? '#ff0' : '#f00';
-    
-    document.getElementById('particleCount').textContent = particles.length;
-    document.getElementById('domCount').textContent = domStorm.children.length;
-    
-    if (performance.memory) {
-      const mb = (performance.memory.usedJSHeapSize / 1048576).toFixed(1);
-      document.getElementById('memUsage').textContent = mb + ' MB';
-    }
-    
-    document.getElementById('intensity').textContent = CONFIG.intensity;
-  }
-}
-
-// ============ MAIN LOOP ============
-function animate() {
-  if (!CONFIG.running) return;
-
-  // Clear canvases with fade effect
-  contexts.forEach(ctx => {
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-  });
-
-  // Update and draw particles
-  particles.forEach(p => {
-    p.update();
-    const ctxIndex = canvases.indexOf(p.canvas);
-    p.draw(contexts[ctxIndex]);
-  });
-
-  // Draw connections on first canvas
-  drawConnections(contexts[0], particles.slice(0, 200));
-
-  // Add extra chaos - random explosions
-  if (Math.random() < 0.1 * CONFIG.intensity) {
-    const ctx = contexts[Math.floor(Math.random() * 3)];
-    const x = Math.random() * ctx.canvas.width;
-    const y = Math.random() * ctx.canvas.height;
-    const radius = Math.random() * 100 + 50;
-    const gradient = ctx.createRadialGradient(x, y, 0, x, y, radius);
-    gradient.addColorStop(0, `hsla(${Math.random() * 360}, 100%, 50%, 0.8)`);
-    gradient.addColorStop(1, 'transparent');
-    ctx.fillStyle = gradient;
-    ctx.fillRect(x - radius, y - radius, radius * 2, radius * 2);
-  }
-
-  // Memory leak every few frames
-  if (frameCount % 60 === 0) {
-    leakMemory();
-  }
-
-  updateFPS();
-  requestAnimationFrame(animate);
-}
-
-// ============ CONTROLS ============
-function addMoreParticles() {
-  CONFIG.intensity += 0.5;
-  initParticles(1000);
-}
-
-function addMoreDOM() {
-  CONFIG.intensity += 0.5;
-  addDOMStorm(200);
-  for (let i = 0; i < 20; i++) createMatrixColumn();
-}
-
-function maxChaos() {
-  CONFIG.intensity = 5;
-  initParticles(5000);
-  addDOMStorm(1000);
-  for (let i = 0; i < 200; i++) createMatrixColumn();
+  const diamonds = {
+    ml: [
+      { amount: 86, price: 20000 }, { amount: 172, price: 40000 },
+      { amount: 257, price: 58000 }, { amount: 344, price: 77000 },
+      { amount: 429, price: 95000 }, { amount: 514, price: 114000 },
+      { amount: 706, price: 155000 }, { amount: 1412, price: 310000 },
+    ],
+    ff: [
+      { amount: 50, price: 7000 }, { amount: 100, price: 14000 },
+      { amount: 310, price: 42000 }, { amount: 520, price: 70000 },
+      { amount: 1060, price: 140000 }, { amount: 2180, price: 280000 },
+    ],
+    pubg: [
+      { amount: 60, price: 13000 }, { amount: 325, price: 65000 },
+      { amount: 660, price: 130000 }, { amount: 1800, price: 325000 },
+      { amount: 3850, price: 650000 }, { amount: 8100, price: 1300000 },
+    ]
+  };
   
-  // Extra heavy: nested animations
-  for (let i = 0; i < 50; i++) {
-    const el = document.createElement('div');
-    el.style.cssText = `
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      border: ${Math.random() * 5 + 1}px solid hsla(${Math.random()*360}, 100%, 50%, 0.5);
-      border-radius: ${Math.random() * 50}%;
-      animation: crazySpin ${Math.random() * 0.5 + 0.1}s linear infinite;
-      pointer-events: none;
-      z-index: ${10 + i};
-      mix-blend-mode: difference;
+  let currentDiamond = 'ml';
+  
+  // ============ RENDER ============
+  function renderAccounts(filter = 'all') {
+    const grid = document.getElementById('accountGrid');
+    const filtered = filter === 'all' ? accounts : accounts.filter(a => a.game === filter);
+    grid.innerHTML = filtered.map(a => `
+      <div class="card" onclick="buyAccount(${a.id})">
+        <div class="card-img" style="background: linear-gradient(135deg, ${getGradient(a.game)})">
+          ${a.icon}
+          <span class="card-badge">${a.badge}</span>
+        </div>
+        <div class="card-body">
+          <h3>${a.name}</h3>
+          <div class="game-tag">${a.tag}</div>
+          <div class="card-features">
+            ${a.features.map(f => `<span class="feature">${f}</span>`).join('')}
+          </div>
+          <div class="card-footer">
+            <span class="price">Rp ${a.price.toLocaleString('id-ID')}</span>
+            <button class="buy-btn">Beli</button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+  
+  function getGradient(game) {
+    const colors = { ml: '#8b5cf6, #ec4899', ff: '#f59e0b, #ef4444', pubg: '#06b6d4, #3b82f6', gi: '#10b981, #8b5cf6' };
+    return colors[game] || '#8b5cf6, #06b6d4';
+  }
+  
+  function filterGame(game, el) {
+    document.querySelectorAll('#akun .tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    renderAccounts(game);
+  }
+  
+  function renderDiamonds() {
+    const grid = document.getElementById('diamondGrid');
+    grid.innerHTML = diamonds[currentDiamond].map(d => `
+      <div class="diamond-card" onclick="buyDiamond(${d.amount}, ${d.price})">
+        <div class="amount">${d.amount}</div>
+        <div class="label">Diamond</div>
+        <div class="price">Rp ${d.price.toLocaleString('id-ID')}</div>
+        <button class="buy-btn">Beli Sekarang</button>
+      </div>
+    `).join('');
+  }
+  
+  function switchDiamond(game, el) {
+    currentDiamond = game;
+    document.querySelectorAll('#diamond .tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    renderDiamonds();
+  }
+  
+  // ============ CHECKOUT MODAL ============
+  function buyAccount(id) {
+    const acc = accounts.find(a => a.id === id);
+    document.getElementById('modalTitle').textContent = '🛒 Beli Akun Game';
+    document.getElementById('modalBody').innerHTML = `
+      <p style="color:#888;margin-bottom:15px"><strong style="color:#fff">${acc.name}</strong><br>${acc.tag}</p>
+      <div class="form-group">
+        <label>Email / Username GameStore</label>
+        <input type="text" id="buyerEmail" placeholder="email@example.com">
+      </div>
+      <div class="form-group">
+        <label>Nomor WhatsApp</label>
+        <input type="text" id="buyerWa" placeholder="08xxxxxxxxxx">
+      </div>
+      <div class="form-group">
+        <label>Catatan (opsional)</label>
+        <textarea id="buyerNote" rows="2" placeholder="Ada pertanyaan?"></textarea>
+      </div>
+      <div class="total">
+        <span>Total Bayar:</span>
+        <span>Rp ${acc.price.toLocaleString('id-ID')}</span>
+      </div>
+      <button class="btn-primary" style="width:100%" onclick="processOrder('AKUN GAME', '${acc.name}', ${acc.price})">🚀 Pesan Sekarang</button>
     `;
-    document.body.appendChild(el);
+    document.getElementById('modal').classList.add('active');
   }
-}
-
-function resetAll() {
-  CONFIG.running = false;
-  setTimeout(() => {
-    location.reload();
-  }, 100);
-}
-
-// ============ INIT ============
-initParticles(CONFIG.particleCount);
-addDOMStorm(CONFIG.domElements);
-initMatrix();
-animate();
-
-// Auto-escalate intensity
-setInterval(() => {
-  if (CONFIG.running) {
-    CONFIG.intensity += 0.1;
-    if (Math.random() < 0.3) {
-      initParticles(100);
+  
+  function buyDiamond(amount, price) {
+    const gameNames = { ml: 'Mobile Legends', ff: 'Free Fire', pubg: 'PUBG Mobile' };
+    document.getElementById('modalTitle').textContent = '💎 Top Up Diamond';
+    document.getElementById('modalBody').innerHTML = `
+      <p style="color:#888;margin-bottom:15px">Top up <strong style="color:#fff">${amount} Diamond ${gameNames[currentDiamond]}</strong></p>
+      <div class="form-group">
+        <label>User ID Game</label>
+        <input type="text" id="buyerEmail" placeholder="Masukkan User ID kamu">
+      </div>
+      <div class="form-group">
+        <label>Zone ID (jika ada)</label>
+        <input type="text" id="buyerWa" placeholder="Zone ID (kosongkan jika tidak ada)">
+      </div>
+      <div class="form-group">
+        <label>Nomor WhatsApp</label>
+        <input type="text" id="buyerNote" placeholder="08xxxxxxxxxx">
+      </div>
+      <div class="total">
+        <span>Total Bayar:</span>
+        <span>Rp ${price.toLocaleString('id-ID')}</span>
+      </div>
+      <button class="btn-primary" style="width:100%" onclick="processOrder('TOP UP DIAMOND', '${amount} Diamond ${gameNames[currentDiamond]}', ${price})">🚀 Pesan Sekarang</button>
+    `;
+    document.getElementById('modal').classList.add('active');
+  }
+  
+  function closeModal() {
+    document.getElementById('modal').classList.remove('active');
+  }
+  
+  // ============ TELEGRAM BOT INTEGRATION ============
+  function getTelegramConfig() {
+    return {
+      token: localStorage.getItem('tg_bot_token') || '8927818107:AAE28GovF1knud-UwzfYBIu3AlsJaWcmUkI',
+      chatId: localStorage.getItem('tg_chat_id') || '7223902938'
+    };
+  }
+  
+  async function sendToTelegram(message) {
+    const { token, chatId } = getTelegramConfig();
+    
+    if (!token || !chatId) {
+      showToast('⚠️ Telegram Bot belum di-setup! Klik ⚙️ untuk setting', 'error');
+      return false;
     }
-    if (Math.random() < 0.2) {
-      addDOMStorm(10);
+    
+    try {
+      const url = `https://api.telegram.org/bot${token}/sendMessage`;
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: chatId,
+          text: message,
+          parse_mode: 'HTML'
+        })
+      });
+      
+      const data = await response.json();
+      if (data.ok) {
+        return true;
+      } else {
+        showToast('❌ Gagal kirim ke Telegram: ' + (data.description || 'Unknown error'), 'error');
+        return false;
+      }
+    } catch (err) {
+      showToast('❌ Error koneksi ke Telegram', 'error');
+      console.error(err);
+      return false;
     }
   }
-}, 3000);
+  
+  function generateOrderId() {
+    return 'GS-' + Date.now().toString().slice(-8) + Math.floor(Math.random() * 100);
+  }
+  
+  async function processOrder(type, itemName, price) {
+    const email = document.getElementById('buyerEmail').value.trim();
+    const wa = document.getElementById('buyerWa').value.trim();
+    const note = document.getElementById('buyerNote').value.trim();
+    
+    if (!email || !wa) {
+      showToast('⚠️ Mohon lengkapi data pembeli!', 'error');
+      return;
+    }
+    
+    const orderId = generateOrderId();
+    const now = new Date();
+    const dateStr = now.toLocaleString('id-ID', { 
+      dateStyle: 'long', 
+      timeStyle: 'short' 
+    });
+    
+    // Format pesan Telegram yang rapi
+    const message = `
+🔔 <b>PESANAN BARU MASUK!</b> 🔔
 
-console.log('%c⚠️ DEVICE STRESS TEST ACTIVE ⚠️', 'color: red; font-size: 20px; font-weight: bold;');
-console.log('%cClose this tab if your device starts overheating!', 'color: yellow; font-size: 14px;');
+━━━━━━━━━━━━━━━━━━
+📋 <b>ORDER ID:</b> <code>${orderId}</code>
+📦 <b>Jenis:</b> ${type}
+🎮 <b>Item:</b> ${itemName}
+💰 <b>Total:</b> Rp ${price.toLocaleString('id-ID')}
+━━━━━━━━━━━━━━━━━━
+
+👤 <b>DATA PEMBELI:</b>
+📧 Email/User ID: <code>${email}</code>
+📱 WhatsApp: <a href="https://wa.me/${wa.replace(/[^0-9]/g,'')}">${wa}</a>
+📝 Catatan: ${note || '-'}
+
+🕐 <b>Waktu:</b> ${dateStr}
+📊 <b>Status:</b> ⏳ Menunggu Pembayaran
+
+━━━━━━━━━━━━━━━━━━
+💡 <i>Segera hubungi pembeli untuk proses pembayaran!</i>
+    `.trim();
+    
+    // Tampilkan loading
+    const btn = event.target;
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '⏳ Mengirim pesanan...';
+    btn.disabled = true;
+    
+    // Kirim ke Telegram
+    const success = await sendToTelegram(message);
+    
+    btn.innerHTML = originalText;
+    btn.disabled = false;
+    
+    if (success) {
+      closeModal();
+      showToast('✅ Pesanan berhasil! Owner sudah diberitahu via Telegram', 'success');
+    } else {
+      // Tetap simpan pesanan walau telegram gagal
+      closeModal();
+      showToast('⚠️ Pesanan dicatat, tapi notif Telegram gagal. Cek setting bot.', 'error');
+    }
+    
+    // Log ke console juga (backup)
+    console.log('📦 New Order:', { orderId, type, itemName, price, email, wa, note, date: dateStr });
+  }
+  
+  // ============ SETTINGS ============
+  function openSettings() {
+    const { token, chatId } = getTelegramConfig();
+    document.getElementById('botToken').value = token;
+    document.getElementById('chatId').value = chatId;
+    document.getElementById('settingsModal').classList.add('active');
+  }
+  
+  function closeSettings() {
+    document.getElementById('settingsModal').classList.remove('active');
+  }
+  
+  function saveSettings() {
+    const token = document.getElementById('botToken').value.trim();
+    const chatId = document.getElementById('chatId').value.trim();
+    
+    if (!token || !chatId) {
+      showToast('⚠️ Token & Chat ID wajib diisi!', 'error');
+      return;
+    }
+    
+    localStorage.setItem('tg_bot_token', token);
+    localStorage.setItem('tg_chat_id', chatId);
+    
+    showToast('✅ Setting tersimpan! Mencoba kirim test...', 'success');
+    testTelegram();
+  }
+  
+  async function testTelegram() {
+    const token = document.getElementById('botToken').value.trim();
+    const chatId = document.getElementById('chatId').value.trim();
+    
+    if (!token || !chatId) {
+      showToast('⚠️ Isi Token & Chat ID dulu!', 'error');
+      return;
+    }
+    
+    const testMsg = `
+✅ <b>TEST BERHASIL!</b> ✅
+
+🎮 GameStore Bot sudah terhubung!
+🤖 Bot Token: <code>${token.slice(0,10)}...${token.slice(-5)}</code>
+💬 Chat ID: <code>${chatId}</code>
+
+Setiap ada pesanan baru, notifikasi akan masuk ke sini otomatis 🚀
+    `.trim();
+    
+    try {
+      const url = `https://api.telegram.org/bot${token}/sendMessage`;
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: chatId,
+          text: testMsg,
+          parse_mode: 'HTML'
+        })
+      });
+      
+      const data = await response.json();
+      if (data.ok) {
+        showToast('✅ Test berhasil! Cek Telegram kamu', 'success');
+        localStorage.setItem('tg_bot_token', token);
+        localStorage.setItem('tg_chat_id', chatId);
+      } else {
+        showToast('❌ Gagal: ' + (data.description || 'Cek token/chat ID'), 'error');
+      }
+    } catch (err) {
+      showToast('❌ Error koneksi', 'error');
+    }
+  }
+  
+  // ============ TOAST ============
+  function showToast(msg, type = '') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast show ' + type;
+    setTimeout(() => t.classList.remove('show'), 4000);
+  }
+  
+  // ============ INIT ============
+  renderAccounts();
+  renderDiamonds();
+  
+  // Cek apakah bot sudah di-setup
+  const { token, chatId } = getTelegramConfig();
+  if (!token || !chatId) {
+    setTimeout(() => {
+      showToast('💡 Klik ⚙️ untuk setup Telegram Bot dulu ya!', '');
+    }, 1500);
+  }
+  
+  // Close modal on outside click
+  document.getElementById('modal').addEventListener('click', (e) => {
+    if (e.target.id === 'modal') closeModal();
+  });
+  document.getElementById('settingsModal').addEventListener('click', (e) => {
+    if (e.target.id === 'settingsModal') closeSettings();
+  });
 </script>
 
 </body>
